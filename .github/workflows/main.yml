@@ -1,50 +1,21 @@
 
-name: Update Save the World mission archive
-
-'on':
-  schedule:
-    - cron: '*/30 * * * *'
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - 'scripts/update_missions.py'
-      - '.github/workflows/main.yml'
-
-permissions:
-  contents: write
-
-concurrency:
-  group: update-stw-missions
-  cancel-in-progress: false
-
-jobs:
-  update:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Update missions
-        run: python scripts/update_missions.py
-
       - name: Commit updated mission data
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin main
+          git reset --hard origin/main
+
+          python scripts/update_missions.py
+
           git add public/data/
+
           if git diff --cached --quiet; then
             echo "No mission data changes."
           else
             git commit -m "Refresh mission data and archive"
-                    git pull --rebase origin main
-          git push origin main
+            git push origin main
           fi
