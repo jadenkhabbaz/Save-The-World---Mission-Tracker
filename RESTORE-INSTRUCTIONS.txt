@@ -1,0 +1,8 @@
+SAVE THE WORLD V-BUCKS TRACKER — CLEAN PROJECT
+
+This package has no loading screen.
+The website homepage is public/index.html.
+The Cloudflare config is wrangler.jsonc and expects the public/ directory at the repository root.
+
+Upload the contents of this extracted folder to the ROOT of your GitHub repository, preserving folders.
+Do not upload the outer ZIP itself.
