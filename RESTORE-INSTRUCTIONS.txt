@@ -1,8 +1,10 @@
-SAVE THE WORLD V-BUCKS TRACKER — CLEAN PROJECT
+SAVE THE WORLD V-BUCKS TRACKER — AUTOMATIC ARCHIVE EDITION
 
-This package has no loading screen.
-The website homepage is public/index.html.
-The Cloudflare config is wrangler.jsonc and expects the public/ directory at the repository root.
+1) Extract this ZIP.
+2) Upload the CONTENTS of the extracted folder to the ROOT of your GitHub repository. Do not upload the containing folder itself.
+3) Preserve public/, scripts/, and .github/ as folders. Keep wrangler.jsonc at the repository root.
+4) In GitHub, open Actions and run “Update Save the World mission archive” once.
+5) Make sure GitHub Actions has read/write repository permissions if the job cannot push its data update.
+6) Keep Cloudflare's root directory blank/default (repository root) and deploy command npx wrangler deploy. wrangler.jsonc serves ./public.
 
-Upload the contents of this extracted folder to the ROOT of your GitHub repository, preserving folders.
-Do not upload the outer ZIP itself.
+This version checks four public tracker pages every 30 minutes, archives snapshots from the first successful run, and displays source status/history. It does not invent past individual mission records that websites do not expose. Source historical totals may be available even when historical mission names are not.
