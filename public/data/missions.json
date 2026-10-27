@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-27T20:38:16Z",
+  "updatedAt": "2026-10-27T20:45:25Z",
   "confirmed": false,
   "status": "partial",
   "today": [],
@@ -17,7 +17,7 @@
         "thisYear": 9550
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-27T20:38:16Z",
+      "checkedAt": "2026-10-27T20:45:25Z",
       "status": "Fetched public page"
     },
     {
@@ -31,7 +31,7 @@
         "last30Days": 1800
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-27T20:38:16Z",
+      "checkedAt": "2026-10-27T20:45:25Z",
       "status": "Fetched public page"
     },
     {
@@ -42,7 +42,7 @@
         "today": 0
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-27T20:38:16Z",
+      "checkedAt": "2026-10-27T20:45:25Z",
       "status": "Fetched public page"
     },
     {
@@ -57,7 +57,7 @@
         "thisYear": 9550
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-27T20:38:16Z",
+      "checkedAt": "2026-10-27T20:45:25Z",
       "status": "Fetched public page"
     }
   ],
