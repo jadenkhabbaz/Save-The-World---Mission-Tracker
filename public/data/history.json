@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-27T20:50:03Z",
+  "updatedAt": "2026-10-28T00:32:28Z",
   "days": [
     {
       "date": "2026-10-27",
@@ -51,6 +51,61 @@
             "last7Days": 300,
             "last30Days": 1800,
             "thisYear": 9550
+          },
+          "status": "Fetched public page"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-28",
+      "checkedAt": "2026-10-28T00:32:28Z",
+      "confirmed": false,
+      "missions": [],
+      "sourceSummaries": [
+        {
+          "name": "HawkBucks",
+          "url": "https://hawkbucks.com/vbucks-missions",
+          "ok": true,
+          "summary": {
+            "today": 50,
+            "yesterday": 0,
+            "last7Days": 150,
+            "last30Days": 1700,
+            "thisYear": 9600
+          },
+          "status": "Fetched public page"
+        },
+        {
+          "name": "V-Bucks Daily",
+          "url": "https://vbucksdaily.com/",
+          "ok": true,
+          "summary": {
+            "today": 50,
+            "yesterday": 0,
+            "last7Days": 300,
+            "last30Days": 17000
+          },
+          "status": "Fetched public page"
+        },
+        {
+          "name": "SaveTheWorldDB",
+          "url": "https://savetheworlddb.com/",
+          "ok": true,
+          "summary": {
+            "today": 0
+          },
+          "status": "Fetched public page"
+        },
+        {
+          "name": "FortniteDB",
+          "url": "https://v2.fortnitedb.com/",
+          "ok": true,
+          "summary": {
+            "today": 50,
+            "yesterday": 0,
+            "last7Days": 300,
+            "last30Days": 1700,
+            "thisYear": 9600
           },
           "status": "Fetched public page"
         }

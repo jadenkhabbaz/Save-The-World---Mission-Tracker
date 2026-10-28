@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-27T20:50:03Z",
+  "updatedAt": "2026-10-28T00:32:28Z",
   "confirmed": false,
   "status": "partial",
   "today": [],
@@ -10,14 +10,14 @@
       "url": "https://hawkbucks.com/vbucks-missions",
       "ok": true,
       "summary": {
-        "today": 0,
-        "yesterday": 100,
-        "last7Days": 100,
-        "last30Days": 1650,
-        "thisYear": 9550
+        "today": 50,
+        "yesterday": 0,
+        "last7Days": 150,
+        "last30Days": 1700,
+        "thisYear": 9600
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-27T20:50:03Z",
+      "checkedAt": "2026-10-28T00:32:28Z",
       "status": "Fetched public page"
     },
     {
@@ -25,13 +25,13 @@
       "url": "https://vbucksdaily.com/",
       "ok": true,
       "summary": {
-        "today": 0,
-        "yesterday": 100,
+        "today": 50,
+        "yesterday": 0,
         "last7Days": 300,
-        "last30Days": 1800
+        "last30Days": 17000
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-27T20:50:03Z",
+      "checkedAt": "2026-10-28T00:32:28Z",
       "status": "Fetched public page"
     },
     {
@@ -42,7 +42,7 @@
         "today": 0
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-27T20:50:03Z",
+      "checkedAt": "2026-10-28T00:32:28Z",
       "status": "Fetched public page"
     },
     {
@@ -50,17 +50,17 @@
       "url": "https://v2.fortnitedb.com/",
       "ok": true,
       "summary": {
-        "today": 31,
-        "yesterday": 100,
+        "today": 50,
+        "yesterday": 0,
         "last7Days": 300,
-        "last30Days": 1800,
-        "thisYear": 9550
+        "last30Days": 1700,
+        "thisYear": 9600
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-27T20:50:03Z",
+      "checkedAt": "2026-10-28T00:32:28Z",
       "status": "Fetched public page"
     }
   ],
-  "historyDays": 1,
-  "historyAvailable": false
+  "historyDays": 2,
+  "historyAvailable": true
 }
