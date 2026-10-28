@@ -1,23 +1,31 @@
 {
-  "updatedAt": "2026-10-28T00:32:28Z",
-  "confirmed": false,
-  "status": "partial",
-  "today": [],
+  "updatedAt": "2026-10-28T05:33:53Z",
+  "confirmed": true,
+  "status": "confirmed",
+  "today": [
+    {
+      "mission": "Fight the Storm",
+      "zone": "Canny Valley",
+      "location": "",
+      "vbucks": 50,
+      "source": "HawkBucks",
+      "powerLevel": 1,
+      "sources": [
+        "HawkBucks"
+      ]
+    }
+  ],
   "yesterday": [],
   "sources": [
     {
       "name": "HawkBucks",
-      "url": "https://hawkbucks.com/vbucks-missions",
+      "url": "https://hawkbucks.com/en",
       "ok": true,
       "summary": {
-        "today": 50,
-        "yesterday": 0,
-        "last7Days": 150,
-        "last30Days": 1700,
-        "thisYear": 9600
+        "today": 28
       },
-      "missionCount": 0,
-      "checkedAt": "2026-10-28T00:32:28Z",
+      "missionCount": 1,
+      "checkedAt": "2026-10-28T05:33:53Z",
       "status": "Fetched public page"
     },
     {
@@ -28,10 +36,10 @@
         "today": 50,
         "yesterday": 0,
         "last7Days": 300,
-        "last30Days": 17000
+        "last30Days": 1700
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-28T00:32:28Z",
+      "checkedAt": "2026-10-28T05:33:53Z",
       "status": "Fetched public page"
     },
     {
@@ -42,7 +50,7 @@
         "today": 0
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-28T00:32:28Z",
+      "checkedAt": "2026-10-28T05:33:53Z",
       "status": "Fetched public page"
     },
     {
@@ -57,7 +65,7 @@
         "thisYear": 9600
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-28T00:32:28Z",
+      "checkedAt": "2026-10-28T05:33:53Z",
       "status": "Fetched public page"
     }
   ],
