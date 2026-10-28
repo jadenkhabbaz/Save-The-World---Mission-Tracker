@@ -17,23 +17,44 @@ DATA = ROOT / 'public' / 'data'
 MISSIONS_FILE = DATA / 'missions.json'
 HISTORY_FILE = DATA / 'history.json'
 SOURCES = [
-    ('HawkBucks', 'https://hawkbucks.com/vbucks-missions'),
+    ('HawkBucks', 'https://hawkbucks.com/en'),
     ('V-Bucks Daily', 'https://vbucksdaily.com/'),
     ('SaveTheWorldDB', 'https://savetheworlddb.com/'),
     ('FortniteDB', 'https://v2.fortnitedb.com/'),
 ]
 
 class TextExtractor(HTMLParser):
+    """Extract readable text while preserving mission-table cells and image labels."""
+    BLOCKS = {'p','div','section','article','tr','li','h1','h2','h3','h4','br','td','th'}
     def __init__(self):
-        super().__init__(); self.parts=[]; self.skip=0
+        super().__init__(convert_charrefs=True)
+        self.parts=[]
+        self.skip=0
     def handle_starttag(self, tag, attrs):
-        if tag in ('script','style','noscript','svg'): self.skip += 1
-        if tag in ('p','div','section','article','tr','li','h1','h2','h3','h4','br'): self.parts.append('\n')
+        attrs=dict(attrs)
+        if tag in ('script','style','noscript','svg'):
+            self.skip += 1
+        if self.skip:
+            return
+        if tag in self.BLOCKS:
+            self.parts.append('\n')
+        # Mission cards frequently communicate the reward/icon through alt text only.
+        if tag in ('img','input'):
+            label=attrs.get('alt') or attrs.get('aria-label') or attrs.get('title') or attrs.get('value')
+            if label:
+                self.parts.append(' ' + label + ' ')
+        for key in ('aria-label','title'):
+            label=attrs.get(key)
+            if label and tag not in ('img','input'):
+                self.parts.append(' ' + label + ' ')
     def handle_endtag(self, tag):
-        if tag in ('script','style','noscript','svg') and self.skip: self.skip -= 1
-        if tag in ('p','div','section','article','tr','li','h1','h2','h3','h4'): self.parts.append('\n')
+        if tag in ('script','style','noscript','svg') and self.skip:
+            self.skip -= 1
+        if not self.skip and tag in self.BLOCKS:
+            self.parts.append('\n')
     def handle_data(self, data):
-        if not self.skip: self.parts.append(data)
+        if not self.skip:
+            self.parts.append(data)
 
 def fetch(url):
     req=Request(url, headers={'User-Agent':'Mozilla/5.0 (compatible; SaveTheWorldMissionTracker/2.0; public fan project)', 'Accept':'text/html,application/xhtml+xml'})
@@ -63,28 +84,58 @@ def find_summary(text):
     return out
 
 def extract_missions(text, source):
-    """Conservative parser for explicit V-Bucks mission rows/cards in source text."""
+    """Extract explicit V-Bucks mission rows from text with HTML table/card boundaries."""
     found=[]
-    # Sources differ; scan lines containing a V-Bucks reward and use nearby line as mission.
-    lines=[re.sub(r'\s+',' ',x).strip(' -|•') for x in text.splitlines()]
+    lines=[re.sub(r'\s+',' ',x).strip(' -|•·') for x in text.splitlines()]
     lines=[x for x in lines if x]
     zones=('Stonewood','Plankerton','Canny Valley','Twine Peaks','Ventures')
-    mission_words=('Fight the Storm','Deliver the Bomb','Ride the Lightning','Retrieve the Data',
-                   'Repair the Shelter','Evacuate the Shelter','Rescue the Survivors','Build the Radar','Destroy the Encampments','Fight Category')
+    mission_words=(
+        'Fight Category 4 Storm','Fight Category 3 Storm','Fight Category 2 Storm',
+        'Fight the Storm','Deliver the Bomb','Ride the Lightning','Retrieve the Data',
+        'Repair the Shelter','Evacuate the Shelter','Rescue the Survivors',
+        'Build the Radar','Destroy the Encampments','Fight Category',
+    )
     for i,line in enumerate(lines):
-        if not re.search(r'\bV[- ]?Bucks\b', line, re.I): continue
-        reward_match=re.search(r'(?:V[- ]?Bucks\s*(?:x|×)?\s*|(?:x|×)\s*)(\d{1,4})\b|\b(\d{1,4})\s*V[- ]?Bucks\b',line,re.I)
-        if not reward_match: continue
+        # Reward labels may come from image alt text or ordinary visible text.
+        if not re.search(r'V[- ]?Bucks', line, re.I):
+            continue
+        reward_match=re.search(
+            r'V[- ]?Bucks\s*(?:(?:x|×)\s*)?(\d{1,4})\b|\b(?:x|×)\s*(\d{1,4})\s*V[- ]?Bucks|\b(\d{1,4})\s*V[- ]?Bucks',
+            line, re.I)
+        if not reward_match:
+            continue
         reward=int(next(g for g in reward_match.groups() if g))
-        if reward<=0 or reward>5000: continue
-        window=' '.join(lines[max(0,i-5):i+2])
+        if reward<=0 or reward>5000:
+            continue
+        # Rows are now separated by td/th, but keep a small window for card-based pages.
+        window_lines=lines[max(0,i-6):min(len(lines),i+3)]
+        window=' '.join(window_lines)
         mission=next((w for w in mission_words if re.search(re.escape(w),window,re.I)),None)
         zone=next((z for z in zones if re.search(re.escape(z),window,re.I)),None)
-        if not mission or not zone: continue
-        # avoid capturing broad page summaries as mission rows
+        if not mission or not zone:
+            continue
+        # Prefer location text such as "The City" when it appears beside the zone.
+        location=''
+        for j in range(max(0,i-6), min(len(lines),i+3)):
+            candidate=lines[j]
+            if zone.lower() in candidate.lower():
+                remainder=re.sub(re.escape(zone), '', candidate, flags=re.I).strip(' -|•·,')
+                remainder=re.sub(r'\b(?:PL\s*)?\d{1,3}\b', '', remainder, flags=re.I).strip(' -|•·,')
+                if remainder and len(remainder)<80 and not re.search(r'V[- ]?Bucks|Founders|reward|mission',remainder,re.I):
+                    location=remainder
+                break
+        # Capture PL if the source includes it nearby.
+        power_level=None
+        for candidate in window_lines:
+            pl=re.search(r'\b(?:PL\s*)?(\d{1,3})\s*(?:Power)?\b',candidate,re.I)
+            if pl and 1 <= int(pl.group(1)) <= 160:
+                power_level=int(pl.group(1)); break
+        item={'mission':mission,'zone':zone,'location':location,'vbucks':reward,'source':source}
+        if power_level is not None:
+            item['powerLevel']=power_level
         key=(mission.lower(),zone.lower(),reward)
-        if any((x['mission'].lower(),x['zone'].lower(),x['vbucks'])==key for x in found): continue
-        found.append({'mission':mission,'zone':zone,'location':'','vbucks':reward,'source':source})
+        if not any((x['mission'].lower(),x['zone'].lower(),x['vbucks'])==key for x in found):
+            found.append(item)
     return found
 
 def load_json(path, default):
