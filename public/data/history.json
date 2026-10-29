@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-29T02:30:31Z",
+  "updatedAt": "2026-10-29T08:56:43Z",
   "days": [
     {
       "date": "2026-10-27",
@@ -121,21 +121,9 @@
     },
     {
       "date": "2026-10-29",
-      "checkedAt": "2026-10-29T02:30:31Z",
+      "checkedAt": "2026-10-29T08:56:43Z",
       "confirmed": false,
-      "missions": [
-        {
-          "mission": "Fight the Storm",
-          "zone": "Canny Valley",
-          "location": "",
-          "vbucks": 50,
-          "source": "HawkBucks",
-          "powerLevel": 1,
-          "sources": [
-            "HawkBucks"
-          ]
-        }
-      ],
+      "missions": [],
       "sourceSummaries": [
         {
           "name": "HawkBucks",

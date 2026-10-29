@@ -1,20 +1,8 @@
 {
-  "updatedAt": "2026-10-29T02:30:31Z",
+  "updatedAt": "2026-10-29T08:56:43Z",
   "confirmed": false,
   "status": "partial",
-  "today": [
-    {
-      "mission": "Fight the Storm",
-      "zone": "Canny Valley",
-      "location": "",
-      "vbucks": 50,
-      "source": "HawkBucks",
-      "powerLevel": 1,
-      "sources": [
-        "HawkBucks"
-      ]
-    }
-  ],
+  "today": [],
   "yesterday": [
     {
       "mission": "Fight the Storm",
@@ -37,7 +25,7 @@
         "today": 29
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-29T02:30:31Z",
+      "checkedAt": "2026-10-29T08:56:43Z",
       "status": "Fetched public page"
     },
     {
@@ -51,7 +39,7 @@
         "last30Days": 1700
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-29T02:30:31Z",
+      "checkedAt": "2026-10-29T08:56:43Z",
       "status": "Fetched public page"
     },
     {
@@ -62,7 +50,7 @@
         "today": 0
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-29T02:30:31Z",
+      "checkedAt": "2026-10-29T08:56:43Z",
       "status": "Fetched public page"
     },
     {
@@ -77,7 +65,7 @@
         "thisYear": 9600
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-29T02:30:31Z",
+      "checkedAt": "2026-10-29T08:56:43Z",
       "status": "Fetched public page"
     }
   ],
