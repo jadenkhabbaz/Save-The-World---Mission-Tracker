@@ -1,12 +1,22 @@
 {
-  "updatedAt": "2026-10-29T21:10:14Z",
-  "confirmed": false,
-  "status": "partial",
-  "today": [],
-  "yesterday": [
+  "updatedAt": "2026-10-30T01:04:02Z",
+  "confirmed": true,
+  "status": "confirmed",
+  "today": [
     {
-      "mission": "Fight the Storm",
+      "mission": "Evacuate the Shelter",
       "zone": "Canny Valley",
+      "location": "",
+      "vbucks": 50,
+      "source": "HawkBucks",
+      "powerLevel": 1,
+      "sources": [
+        "HawkBucks"
+      ]
+    },
+    {
+      "mission": "Fight Category 2 Storm",
+      "zone": "Twine Peaks",
       "location": "",
       "vbucks": 50,
       "source": "HawkBucks",
@@ -16,16 +26,17 @@
       ]
     }
   ],
+  "yesterday": [],
   "sources": [
     {
       "name": "HawkBucks",
       "url": "https://hawkbucks.com/en",
       "ok": true,
       "summary": {
-        "today": 29
+        "today": 30
       },
-      "missionCount": 0,
-      "checkedAt": "2026-10-29T21:10:14Z",
+      "missionCount": 2,
+      "checkedAt": "2026-10-30T01:04:02Z",
       "status": "Fetched public page"
     },
     {
@@ -33,13 +44,13 @@
       "url": "https://vbucksdaily.com/",
       "ok": true,
       "summary": {
-        "today": 0,
-        "yesterday": 50,
-        "last7Days": 300,
-        "last30Days": 1700
+        "today": 100,
+        "yesterday": 0,
+        "last7Days": 400,
+        "last30Days": 1800
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-29T21:10:14Z",
+      "checkedAt": "2026-10-30T01:04:02Z",
       "status": "Fetched public page"
     },
     {
@@ -50,7 +61,7 @@
         "today": 0
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-29T21:10:14Z",
+      "checkedAt": "2026-10-30T01:04:02Z",
       "status": "Fetched public page"
     },
     {
@@ -58,17 +69,17 @@
       "url": "https://v2.fortnitedb.com/",
       "ok": true,
       "summary": {
-        "today": 31,
-        "yesterday": 50,
-        "last7Days": 300,
-        "last30Days": 1700,
-        "thisYear": 9600
+        "today": 100,
+        "yesterday": 0,
+        "last7Days": 400,
+        "last30Days": 1800,
+        "thisYear": 9700
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-29T21:10:14Z",
+      "checkedAt": "2026-10-30T01:04:02Z",
       "status": "Fetched public page"
     }
   ],
-  "historyDays": 3,
+  "historyDays": 4,
   "historyAvailable": true
 }

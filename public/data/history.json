@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-29T21:10:14Z",
+  "updatedAt": "2026-10-30T01:04:02Z",
   "days": [
     {
       "date": "2026-10-27",
@@ -165,6 +165,80 @@
             "last7Days": 300,
             "last30Days": 1700,
             "thisYear": 9600
+          },
+          "status": "Fetched public page"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-30",
+      "checkedAt": "2026-10-30T01:04:02Z",
+      "confirmed": true,
+      "missions": [
+        {
+          "mission": "Evacuate the Shelter",
+          "zone": "Canny Valley",
+          "location": "",
+          "vbucks": 50,
+          "source": "HawkBucks",
+          "powerLevel": 1,
+          "sources": [
+            "HawkBucks"
+          ]
+        },
+        {
+          "mission": "Fight Category 2 Storm",
+          "zone": "Twine Peaks",
+          "location": "",
+          "vbucks": 50,
+          "source": "HawkBucks",
+          "powerLevel": 1,
+          "sources": [
+            "HawkBucks"
+          ]
+        }
+      ],
+      "sourceSummaries": [
+        {
+          "name": "HawkBucks",
+          "url": "https://hawkbucks.com/en",
+          "ok": true,
+          "summary": {
+            "today": 30
+          },
+          "status": "Fetched public page"
+        },
+        {
+          "name": "V-Bucks Daily",
+          "url": "https://vbucksdaily.com/",
+          "ok": true,
+          "summary": {
+            "today": 100,
+            "yesterday": 0,
+            "last7Days": 400,
+            "last30Days": 1800
+          },
+          "status": "Fetched public page"
+        },
+        {
+          "name": "SaveTheWorldDB",
+          "url": "https://savetheworlddb.com/",
+          "ok": true,
+          "summary": {
+            "today": 0
+          },
+          "status": "Fetched public page"
+        },
+        {
+          "name": "FortniteDB",
+          "url": "https://v2.fortnitedb.com/",
+          "ok": true,
+          "summary": {
+            "today": 100,
+            "yesterday": 0,
+            "last7Days": 400,
+            "last30Days": 1800,
+            "thisYear": 9700
           },
           "status": "Fetched public page"
         }
