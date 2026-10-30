@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-30T14:13:25Z",
+  "updatedAt": "2026-10-30T19:26:47Z",
   "confirmed": true,
   "status": "confirmed",
   "today": [
@@ -36,7 +36,7 @@
         "today": 30
       },
       "missionCount": 2,
-      "checkedAt": "2026-10-30T14:13:25Z",
+      "checkedAt": "2026-10-30T19:26:47Z",
       "status": "Fetched public page"
     },
     {
@@ -50,7 +50,7 @@
         "last30Days": 1800
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-30T14:13:25Z",
+      "checkedAt": "2026-10-30T19:26:47Z",
       "status": "Fetched public page"
     },
     {
@@ -58,10 +58,10 @@
       "url": "https://savetheworlddb.com/",
       "ok": true,
       "summary": {
-        "today": 0
+        "today": 100
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-30T14:13:25Z",
+      "checkedAt": "2026-10-30T19:26:47Z",
       "status": "Fetched public page"
     },
     {
@@ -76,7 +76,7 @@
         "thisYear": 9700
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-30T14:13:25Z",
+      "checkedAt": "2026-10-30T19:26:47Z",
       "status": "Fetched public page"
     }
   ],
