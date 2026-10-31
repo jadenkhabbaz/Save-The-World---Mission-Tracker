@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-31T02:30:15Z",
+  "updatedAt": "2026-10-31T08:55:19Z",
   "confirmed": true,
   "status": "confirmed",
   "today": [
@@ -9,7 +9,6 @@
       "location": "",
       "vbucks": 50,
       "source": "HawkBucks",
-      "powerLevel": 1,
       "sources": [
         "HawkBucks"
       ]
@@ -20,7 +19,6 @@
       "location": "",
       "vbucks": 50,
       "source": "HawkBucks",
-      "powerLevel": 1,
       "sources": [
         "HawkBucks"
       ]
@@ -33,7 +31,6 @@
       "location": "",
       "vbucks": 50,
       "source": "HawkBucks",
-      "powerLevel": 1,
       "sources": [
         "HawkBucks"
       ]
@@ -44,7 +41,6 @@
       "location": "",
       "vbucks": 50,
       "source": "HawkBucks",
-      "powerLevel": 1,
       "sources": [
         "HawkBucks"
       ]
@@ -59,7 +55,7 @@
         "today": 31
       },
       "missionCount": 2,
-      "checkedAt": "2026-10-31T02:30:15Z",
+      "checkedAt": "2026-10-31T08:55:19Z",
       "status": "Fetched public page"
     },
     {
@@ -73,7 +69,7 @@
         "last30Days": 1800
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-31T02:30:15Z",
+      "checkedAt": "2026-10-31T08:55:19Z",
       "status": "Fetched public page"
     },
     {
@@ -84,7 +80,7 @@
         "today": 100
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-31T02:30:15Z",
+      "checkedAt": "2026-10-31T08:55:19Z",
       "status": "Fetched public page"
     },
     {
@@ -99,7 +95,7 @@
         "thisYear": 9800
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-31T02:30:15Z",
+      "checkedAt": "2026-10-31T08:55:19Z",
       "status": "Fetched public page"
     }
   ],
