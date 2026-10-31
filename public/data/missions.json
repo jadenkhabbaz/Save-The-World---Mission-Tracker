@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-30T23:16:17Z",
+  "updatedAt": "2026-10-31T02:30:15Z",
   "confirmed": true,
   "status": "confirmed",
   "today": [
@@ -26,17 +26,40 @@
       ]
     }
   ],
-  "yesterday": [],
+  "yesterday": [
+    {
+      "mission": "Evacuate the Shelter",
+      "zone": "Canny Valley",
+      "location": "",
+      "vbucks": 50,
+      "source": "HawkBucks",
+      "powerLevel": 1,
+      "sources": [
+        "HawkBucks"
+      ]
+    },
+    {
+      "mission": "Fight Category 2 Storm",
+      "zone": "Twine Peaks",
+      "location": "",
+      "vbucks": 50,
+      "source": "HawkBucks",
+      "powerLevel": 1,
+      "sources": [
+        "HawkBucks"
+      ]
+    }
+  ],
   "sources": [
     {
       "name": "HawkBucks",
       "url": "https://hawkbucks.com/en",
       "ok": true,
       "summary": {
-        "today": 30
+        "today": 31
       },
       "missionCount": 2,
-      "checkedAt": "2026-10-30T23:16:17Z",
+      "checkedAt": "2026-10-31T02:30:15Z",
       "status": "Fetched public page"
     },
     {
@@ -45,12 +68,12 @@
       "ok": true,
       "summary": {
         "today": 100,
-        "yesterday": 0,
+        "yesterday": 100,
         "last7Days": 400,
         "last30Days": 1800
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-30T23:16:17Z",
+      "checkedAt": "2026-10-31T02:30:15Z",
       "status": "Fetched public page"
     },
     {
@@ -61,7 +84,7 @@
         "today": 100
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-30T23:16:17Z",
+      "checkedAt": "2026-10-31T02:30:15Z",
       "status": "Fetched public page"
     },
     {
@@ -70,16 +93,16 @@
       "ok": true,
       "summary": {
         "today": 100,
-        "yesterday": 0,
+        "yesterday": 100,
         "last7Days": 400,
         "last30Days": 1800,
-        "thisYear": 9700
+        "thisYear": 9800
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-30T23:16:17Z",
+      "checkedAt": "2026-10-31T02:30:15Z",
       "status": "Fetched public page"
     }
   ],
-  "historyDays": 4,
+  "historyDays": 5,
   "historyAvailable": true
 }
