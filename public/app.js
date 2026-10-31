@@ -18,12 +18,8 @@ function missionIcon(name) {
 
 function missionImage(name) {
   const n = String(name || "").toLowerCase();
-  if (n.includes("evacuate the shelter")) {
-    return "assets/missions/evacuate-the-shelter.png";
-  }
-  if (n.includes("fight category 2 storm")) {
-    return "assets/missions/fight-category-2-storm.png";
-  }
+  if (n.includes("evacuate the shelter")) return "assets/missions/evacuate-the-shelter.png";
+  if (n.includes("fight category 2 storm")) return "assets/missions/fight-category-2-storm.png";
   return null;
 }
 
@@ -70,6 +66,14 @@ function renderMissions() {
       img.className="mission-icon-image";
       img.src=imagePath;
       img.alt="";
+      // Explicit sizing prevents the PNG's intrinsic dimensions overflowing the card.
+      img.style.width="100%";
+      img.style.height="100%";
+      img.style.maxWidth="100%";
+      img.style.maxHeight="100%";
+      img.style.objectFit="contain";
+      img.style.display="block";
+      img.style.borderRadius="8px";
       icon.append(img);
     } else {
       icon.textContent=missionIcon(m.mission);
