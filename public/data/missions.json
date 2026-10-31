@@ -1,20 +1,10 @@
 {
-  "updatedAt": "2026-10-31T08:55:19Z",
+  "updatedAt": "2026-10-31T15:21:54Z",
   "confirmed": true,
   "status": "confirmed",
   "today": [
     {
       "mission": "Evacuate the Shelter",
-      "zone": "Canny Valley",
-      "location": "",
-      "vbucks": 50,
-      "source": "HawkBucks",
-      "sources": [
-        "HawkBucks"
-      ]
-    },
-    {
-      "mission": "Fight Category 2 Storm",
       "zone": "Twine Peaks",
       "location": "",
       "vbucks": 50,
@@ -54,8 +44,8 @@
       "summary": {
         "today": 31
       },
-      "missionCount": 2,
-      "checkedAt": "2026-10-31T08:55:19Z",
+      "missionCount": 1,
+      "checkedAt": "2026-10-31T15:21:54Z",
       "status": "Fetched public page"
     },
     {
@@ -69,7 +59,7 @@
         "last30Days": 1800
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-31T08:55:19Z",
+      "checkedAt": "2026-10-31T15:21:54Z",
       "status": "Fetched public page"
     },
     {
@@ -80,7 +70,7 @@
         "today": 100
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-31T08:55:19Z",
+      "checkedAt": "2026-10-31T15:21:54Z",
       "status": "Fetched public page"
     },
     {
@@ -95,7 +85,7 @@
         "thisYear": 9800
       },
       "missionCount": 0,
-      "checkedAt": "2026-10-31T08:55:19Z",
+      "checkedAt": "2026-10-31T15:21:54Z",
       "status": "Fetched public page"
     }
   ],
