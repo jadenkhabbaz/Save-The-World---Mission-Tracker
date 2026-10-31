@@ -16,6 +16,17 @@ function missionIcon(name) {
   return "🎯";
 }
 
+function missionImage(name) {
+  const n = String(name || "").toLowerCase();
+  if (n.includes("evacuate the shelter")) {
+    return "assets/missions/evacuate-the-shelter.png";
+  }
+  if (n.includes("fight category 2 storm")) {
+    return "assets/missions/fight-category-2-storm.png";
+  }
+  return null;
+}
+
 function renderMissions() {
   const list = Array.isArray(data.today) ? data.today : [];
   const zone = $("zone").value.toLowerCase();
@@ -49,7 +60,21 @@ function renderMissions() {
     const h=document.createElement("div"); h.className="missionhead";
     const left=document.createElement("div"); left.className="mission-info";
     const titleRow=document.createElement("div"); titleRow.className="mission-title-row";
-    const icon=document.createElement("span"); icon.className="mission-icon"; icon.setAttribute("aria-hidden","true"); icon.textContent=missionIcon(m.mission);
+
+    const icon=document.createElement("span");
+    icon.className="mission-icon";
+    icon.setAttribute("aria-hidden","true");
+    const imagePath=missionImage(m.mission);
+    if (imagePath) {
+      const img=document.createElement("img");
+      img.className="mission-icon-image";
+      img.src=imagePath;
+      img.alt="";
+      icon.append(img);
+    } else {
+      icon.textContent=missionIcon(m.mission);
+    }
+
     const title=document.createElement("h3"); title.textContent=m.mission || "Mission alert";
     titleRow.append(icon,title);
     const sub=document.createElement("p"); sub.className="mission-sub"; sub.textContent=`${m.zone||"Unknown zone"}${m.location?" · "+m.location:""}`;
