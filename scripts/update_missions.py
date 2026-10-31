@@ -83,13 +83,20 @@ def extract_missions(text,source):
     remainder=re.sub(r"\b(?:PL\s*)?\d{1,3}\b","",remainder,flags=re.I).strip(" -|•·,")
     if remainder and len(remainder)<80 and not re.search(r"V[- ]?Bucks|Founders|reward|mission",remainder,re.I): location=remainder
     break
-  # Do not interpret arbitrary nearby numbers as Power Level.
+  # Accept only explicitly labelled Power Level formats, including HawkBucks' "58 Power".
   power_level=None
   for candidate in window_lines:
-   match=re.search(r"\bPL\s*[:#-]?\s*(\d{1,3})\b|\bPower\s*Level\s*[:#-]?\s*(\d{1,3})\b|\b(\d{1,3})\s*PL\b",candidate,re.I)
+   match=re.search(
+    r"\bPL\s*[:#-]?\s*(\d{1,3})\b"
+    r"|\bPower\s*Level\s*[:#-]?\s*(\d{1,3})\b"
+    r"|\b(\d{1,3})\s*PL\b"
+    r"|\b(\d{1,3})\s+Power\b",
+    candidate,re.I
+   )
    if match:
     value=next((g for g in match.groups() if g is not None),None)
-    if value and 2<=int(value)<=160: power_level=int(value); break
+    if value and 2<=int(value)<=160:
+     power_level=int(value); break
   item={"mission":mission,"zone":zone,"location":location,"vbucks":reward,"source":source}
   if power_level is not None: item["powerLevel"]=power_level
   key=(mission.lower(),zone.lower(),reward)
