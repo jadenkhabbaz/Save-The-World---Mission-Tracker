@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-11-01T02:15:23Z",
-  "confirmed": true,
-  "status": "confirmed",
+  "updatedAt": "2026-11-01T07:37:23Z",
+  "confirmed": false,
+  "status": "partial",
   "today": [
     {
       "mission": "Fight Category 2 Storm",
@@ -39,13 +39,14 @@
   "sources": [
     {
       "name": "HawkBucks",
-      "url": "https://hawkbucks.com/en",
+      "url": "https://hawkbucks.com/",
       "ok": true,
       "summary": {
         "today": 1
       },
-      "missionCount": 1,
-      "checkedAt": "2026-11-01T02:15:23Z",
+      "missionCount": 0,
+      "powerLevelCount": 0,
+      "checkedAt": "2026-11-01T07:37:23Z",
       "status": "Fetched public page"
     },
     {
@@ -59,7 +60,8 @@
         "last30Days": 1800
       },
       "missionCount": 0,
-      "checkedAt": "2026-11-01T02:15:23Z",
+      "powerLevelCount": 0,
+      "checkedAt": "2026-11-01T07:37:23Z",
       "status": "Fetched public page"
     },
     {
@@ -67,10 +69,11 @@
       "url": "https://savetheworlddb.com/",
       "ok": true,
       "summary": {
-        "today": 100
+        "today": 50
       },
       "missionCount": 0,
-      "checkedAt": "2026-11-01T02:15:23Z",
+      "powerLevelCount": 0,
+      "checkedAt": "2026-11-01T07:37:23Z",
       "status": "Fetched public page"
     },
     {
@@ -85,7 +88,8 @@
         "thisYear": 9850
       },
       "missionCount": 0,
-      "checkedAt": "2026-11-01T02:15:23Z",
+      "powerLevelCount": 0,
+      "checkedAt": "2026-11-01T07:37:23Z",
       "status": "Fetched public page"
     }
   ],
