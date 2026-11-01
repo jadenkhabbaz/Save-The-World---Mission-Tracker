@@ -1,21 +1,23 @@
 {
-  "updatedAt": "2026-11-01T07:38:18Z",
-  "confirmed": false,
-  "status": "partial",
-  "today": [],
-  "yesterday": [
+  "updatedAt": "2026-11-01T07:57:54Z",
+  "confirmed": true,
+  "status": "confirmed",
+  "today": [
     {
-      "mission": "Evacuate the Shelter",
+      "mission": "Fight Category 2 Storm",
       "zone": "Canny Valley",
       "location": "",
       "vbucks": 50,
-      "source": "HawkBucks",
+      "source": "PennyDB",
       "sources": [
-        "HawkBucks"
-      ]
-    },
+        "PennyDB"
+      ],
+      "powerLevel": 70
+    }
+  ],
+  "yesterday": [
     {
-      "mission": "Fight Category 2 Storm",
+      "mission": "Evacuate the Shelter",
       "zone": "Twine Peaks",
       "location": "",
       "vbucks": 50,
@@ -27,59 +29,14 @@
   ],
   "sources": [
     {
-      "name": "HawkBucks",
-      "url": "https://hawkbucks.com/",
+      "name": "PennyDB",
+      "url": "https://pennydb.net/api",
       "ok": true,
-      "summary": {
-        "today": 1
-      },
-      "missionCount": 0,
-      "powerLevelCount": 0,
-      "checkedAt": "2026-11-01T07:38:18Z",
-      "status": "Fetched public page"
-    },
-    {
-      "name": "V-Bucks Daily",
-      "url": "https://vbucksdaily.com/",
-      "ok": true,
-      "summary": {
-        "today": 50,
-        "yesterday": 100,
-        "last7Days": 400,
-        "last30Days": 1800
-      },
-      "missionCount": 0,
-      "powerLevelCount": 0,
-      "checkedAt": "2026-11-01T07:38:18Z",
-      "status": "Fetched public page"
-    },
-    {
-      "name": "SaveTheWorldDB",
-      "url": "https://savetheworlddb.com/",
-      "ok": true,
-      "summary": {
-        "today": 50
-      },
-      "missionCount": 0,
-      "powerLevelCount": 0,
-      "checkedAt": "2026-11-01T07:38:18Z",
-      "status": "Fetched public page"
-    },
-    {
-      "name": "FortniteDB",
-      "url": "https://v2.fortnitedb.com/",
-      "ok": true,
-      "summary": {
-        "today": 50,
-        "yesterday": 100,
-        "last7Days": 400,
-        "last30Days": 1800,
-        "thisYear": 9850
-      },
-      "missionCount": 0,
-      "powerLevelCount": 0,
-      "checkedAt": "2026-11-01T07:38:18Z",
-      "status": "Fetched public page"
+      "summary": {},
+      "missionCount": 1,
+      "powerLevelCount": 1,
+      "checkedAt": "2026-11-01T07:57:54Z",
+      "status": "Fetched structured mission JSON"
     }
   ],
   "historyDays": 6,
