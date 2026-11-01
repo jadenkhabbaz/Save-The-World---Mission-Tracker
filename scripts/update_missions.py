@@ -1,18 +1,27 @@
 #!/usr/bin/env python3
-"""Fetch Save the World V-Bucks missions and maintain a daily archive.
+"""Fetch Fortnite Save the World V-Bucks missions and keep a daily archive.
 
-Power Levels are taken only from source-labelled values (for example
-"70 Power", "PL 70", or an explicitly labelled Power Level column).
-The updater never guesses a Power Level from a mission name or zone.
+Primary source: PennyDB's public structured JSON API (https://pennydb.net/api).
+PennyDB exposes each mission's `pl`, `missionType`, and `alertRewards` fields.
+Fallback sources: public HTML mission trackers, used only if PennyDB is down or
+its response schema is not usable.
+
+Power Levels are never inferred from mission names, zones, rewards, or dates.
+A PL is written only when it comes from PennyDB's `pl` field or an explicitly
+labelled Power Level in a fallback source.
 """
+
+from __future__ import annotations
 
 import json
 import re
 import sys
 import time
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
+from typing import Any
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -20,22 +29,21 @@ DATA = ROOT / "public" / "data"
 MISSIONS_FILE = DATA / "missions.json"
 HISTORY_FILE = DATA / "history.json"
 
-# HawkBucks' public page displays the live card details, including "70 Power".
-# The other public trackers are fallbacks and can also expose a PL column.
-SOURCES = [
+PENNYDB_API = "https://pennydb.net/api"
+FALLBACK_SOURCES = [
     ("HawkBucks", "https://hawkbucks.com/"),
     ("V-Bucks Daily", "https://vbucksdaily.com/"),
     ("SaveTheWorldDB", "https://savetheworlddb.com/"),
     ("FortniteDB", "https://v2.fortnitedb.com/"),
 ]
 
-ZONES = (
-    "Stonewood",
-    "Plankerton",
-    "Canny Valley",
-    "Twine Peaks",
-    "Ventures",
-)
+ZONE_ALIASES = {
+    "stonewood": "Stonewood",
+    "plankerton": "Plankerton",
+    "canny valley": "Canny Valley",
+    "twine peaks": "Twine Peaks",
+    "ventures": "Ventures",
+}
 
 MISSION_NAMES = (
     "Fight Category 4 Storm",
@@ -49,11 +57,11 @@ MISSION_NAMES = (
     "Repair the Shelter",
     "Evacuate the Shelter",
     "Rescue the Survivors",
+    "Build the Radar Grid",
     "Build the Radar",
     "Destroy the Encampments",
     "Eliminate and Collect",
     "Resupply",
-    "Fight Category",
 )
 
 REWARD_RE = re.compile(
@@ -72,9 +80,178 @@ EXPLICIT_POWER_RE = re.compile(
 )
 
 
-class TextExtractor(HTMLParser):
-    """Extract readable page text and useful accessibility/data attributes."""
+def utc_now() -> datetime:
+    return datetime.now(timezone.utc).replace(microsecond=0)
 
+
+def iso_z(value: datetime) -> str:
+    return value.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _as_int(value: Any) -> int | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
+    if isinstance(value, str):
+        match = re.fullmatch(r"\s*(?:PL\s*)?(\d{1,3})\s*", value, re.I)
+        if match:
+            return int(match.group(1))
+    return None
+
+
+def _valid_power_level(value: Any) -> int | None:
+    parsed = _as_int(value)
+    return parsed if parsed is not None and 1 <= parsed <= 160 else None
+
+
+def _zone_name(raw_zone: Any) -> str | None:
+    value = str(raw_zone or "").replace("_", " ").strip().casefold()
+    return ZONE_ALIASES.get(value)
+
+
+def _mission_name(raw: Any) -> str:
+    if isinstance(raw, dict):
+        for key in ("name", "displayName", "type"):
+            value = raw.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+        return ""
+    return raw.strip() if isinstance(raw, str) else ""
+
+
+def _is_vbucks_reward(reward: Any) -> bool:
+    if not isinstance(reward, dict):
+        return False
+    item_type = str(reward.get("itemType") or reward.get("templateId") or "").casefold()
+    name = re.sub(r"[\s_-]+", "", str(reward.get("name") or "").casefold())
+    return (
+        "currency_mtxswap" in item_type
+        or "mtxswap" in item_type
+        or "vbucks" in name
+        or "vbuck" in name
+    )
+
+
+def _mission_vbucks_amount(mission: dict[str, Any]) -> int | None:
+    # PennyDB models V-Bucks mission rewards in alertRewards. `rewards` is
+    # accepted as a fallback for compatible response variants.
+    for key in ("alertRewards", "rewards"):
+        entries = mission.get(key)
+        if not isinstance(entries, list):
+            continue
+        for reward in entries:
+            if not _is_vbucks_reward(reward):
+                continue
+            quantity = _as_int(reward.get("quantity"))
+            if quantity is not None and 0 < quantity <= 5000:
+                return quantity
+    return None
+
+
+def parse_pennydb_payload(payload: Any) -> list[dict[str, Any]]:
+    """Convert PennyDB `/api` response into this tracker's mission schema.
+
+    Expected public shape: {"missions": {"canny_valley": [
+      {"pl": "70", "missionType": {"name": "..."},
+       "alertRewards": [{"itemType": "...currency_mtxswap", "quantity": 50}]}
+    ]}}
+    """
+    if not isinstance(payload, dict) or not isinstance(payload.get("missions"), dict):
+        raise ValueError("PennyDB response is missing the missions object")
+
+    raw_zones = payload["missions"]
+    recognized_zone_arrays = 0
+    parsed: list[dict[str, Any]] = []
+
+    for raw_zone, entries in raw_zones.items():
+        zone = _zone_name(raw_zone)
+        if zone is None:
+            continue
+        if not isinstance(entries, list):
+            raise ValueError(f"PennyDB zone {raw_zone!r} is not a list")
+        recognized_zone_arrays += 1
+
+        for raw_mission in entries:
+            if not isinstance(raw_mission, dict):
+                continue
+            quantity = _mission_vbucks_amount(raw_mission)
+            if quantity is None:
+                continue
+
+            mission_name = _mission_name(raw_mission.get("missionType"))
+            if not mission_name:
+                # Do not generate a misleading mission card with an unknown name.
+                continue
+
+            item: dict[str, Any] = {
+                "mission": mission_name,
+                "zone": zone,
+                "location": str(raw_mission.get("location") or raw_mission.get("zoneName") or ""),
+                "vbucks": quantity,
+                "source": "PennyDB",
+                "sources": ["PennyDB"],
+            }
+
+            # `pl` is PennyDB's explicit mission Power Level field. No guessing.
+            power_level = _valid_power_level(raw_mission.get("pl"))
+            if power_level is not None:
+                item["powerLevel"] = power_level
+
+            parsed.append(item)
+
+    if recognized_zone_arrays == 0:
+        raise ValueError("PennyDB response did not contain recognized Save the World zones")
+
+    return _deduplicate(parsed)
+
+
+def _deduplicate(missions: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    result: dict[tuple[str, str, int], dict[str, Any]] = {}
+    for mission in missions:
+        key = (
+            str(mission.get("mission", "")).casefold(),
+            str(mission.get("zone", "")).casefold(),
+            int(mission.get("vbucks", 0)),
+        )
+        if key not in result:
+            result[key] = dict(mission)
+            result[key]["sources"] = list(mission.get("sources") or [mission.get("source", "Unknown")])
+            continue
+
+        existing = result[key]
+        if existing.get("powerLevel") is None and mission.get("powerLevel") is not None:
+            existing["powerLevel"] = mission["powerLevel"]
+        if not existing.get("location") and mission.get("location"):
+            existing["location"] = mission["location"]
+        for source in mission.get("sources") or [mission.get("source", "Unknown")]:
+            if source and source not in existing["sources"]:
+                existing["sources"].append(source)
+
+    return list(result.values())
+
+
+def fetch_json(url: str) -> Any:
+    request = Request(
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0 (compatible; JadBakerX-STW-Mission-Tracker/4.0)",
+            "Accept": "application/json",
+        },
+    )
+    with urlopen(request, timeout=25) as response:
+        if response.status != 200:
+            raise RuntimeError(f"HTTP {response.status}")
+        raw = response.read(20_000_000)
+    try:
+        return json.loads(raw.decode("utf-8", "replace"))
+    except json.JSONDecodeError as exc:
+        raise ValueError("PennyDB returned invalid JSON") from exc
+
+
+class TextExtractor(HTMLParser):
     BLOCKS = {
         "p", "div", "section", "article", "tr", "li", "h1", "h2",
         "h3", "h4", "br", "td", "th", "main", "header", "footer",
@@ -83,31 +260,19 @@ class TextExtractor(HTMLParser):
 
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.parts = []
+        self.parts: list[str] = []
         self.skip_depth = 0
-        self.script_depth = 0
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
-
         if tag in self.SKIP_TAGS:
             self.skip_depth += 1
             return
-
-        # Do not discard useful data attributes. Some pages expose PL in
-        # aria-label/title or data-power-level attributes rather than text.
-        for key in (
-            "alt", "aria-label", "title", "data-power-level",
-            "data-powerlevel", "data-pl", "data-power",
-        ):
+        for key in ("alt", "aria-label", "title", "data-power-level", "data-powerlevel", "data-pl", "data-power"):
             value = attrs.get(key)
             if value:
                 self.parts.append("\n" + str(value) + "\n")
-
-        if self.skip_depth:
-            return
-
-        if tag in self.BLOCKS:
+        if not self.skip_depth and tag in self.BLOCKS:
             self.parts.append("\n")
 
     def handle_endtag(self, tag):
@@ -121,36 +286,26 @@ class TextExtractor(HTMLParser):
             self.parts.append(data)
 
 
-def fetch(url):
+def fetch_text(url: str) -> str:
     request = Request(
         url,
         headers={
-            "User-Agent": (
-                "Mozilla/5.0 (compatible; "
-                "SaveTheWorldMissionTracker/3.0; public fan project)"
-            ),
-            "Accept": "text/html,application/xhtml+xml,application/json",
+            "User-Agent": "Mozilla/5.0 (compatible; JadBakerX-STW-Mission-Tracker/4.0)",
+            "Accept": "text/html,application/xhtml+xml",
         },
     )
-
-    with urlopen(request, timeout=30) as response:
+    with urlopen(request, timeout=25) as response:
         if response.status != 200:
             raise RuntimeError(f"HTTP {response.status}")
         raw = response.read(8_000_000)
-
-    decoded = raw.decode("utf-8", "replace")
     parser = TextExtractor()
-    parser.feed(decoded)
-
-    # HTMLParser extracts server-rendered text and useful accessibility/data
-    # attributes. Do not append the raw markup: that would merge unrelated
-    # cards into one enormous line and make their PL/location association noisy.
-    readable = "\n".join(parser.parts)
-    readable = re.sub(r"[ \t\xa0]+", " ", readable)
-    return re.sub(r"\n\s*\n+", "\n", readable)
+    parser.feed(raw.decode("utf-8", "replace"))
+    text = "\n".join(parser.parts)
+    text = re.sub(r"[ \t\xa0]+", " ", text)
+    return re.sub(r"\n\s*\n+", "\n", text)
 
 
-def find_summary(text):
+def find_summary(text: str) -> dict[str, int]:
     labels = [
         ("today", r"(?:Today|Today’s|Today\s+V-Bucks|V-Bucks Today)"),
         ("yesterday", r"Yesterday"),
@@ -158,269 +313,226 @@ def find_summary(text):
         ("last30Days", r"(?:This Month|Last 30 Days)"),
         ("thisYear", r"This Year"),
     ]
-    result = {}
-
+    result: dict[str, int] = {}
     for key, label in labels:
         for match in re.finditer(label, text, re.I):
-            amount = re.search(
-                r"(?<![\w])([\d,]+)\s*(?:V-Bucks)?",
-                text[match.end():match.end() + 180],
-                re.I,
-            )
+            amount = re.search(r"(?<![\w])([\d,]+)\s*(?:V-Bucks)?", text[match.end():match.end() + 180], re.I)
             if amount:
                 value = int(amount.group(1).replace(",", ""))
                 if value <= 1_000_000:
                     result[key] = value
                     break
-
     return result
 
 
-def _normal_lines(text):
-    lines = [re.sub(r"\s+", " ", line).strip(" -|•·") for line in text.splitlines()]
-    return [line for line in lines if line]
-
-
-def _mission_at(lines, start, end, reward_index):
-    candidates = []
-    for index in range(start, end):
-        line = lines[index]
-        for name in MISSION_NAMES:
-            if re.search(re.escape(name), line, re.I):
-                candidates.append((abs(index - reward_index), -len(name), index, name))
-    return min(candidates) if candidates else None
-
-
-def _zone_at(lines, start, end, mission_index):
-    candidates = []
-    for index in range(start, end):
-        for zone in ZONES:
-            if re.search(re.escape(zone), lines[index], re.I):
-                candidates.append((abs(index - mission_index), index, zone))
-    return min(candidates) if candidates else None
-
-
-def _power_level(lines, start, end, mission_index, has_power_column):
-    candidates = []
-
-    # First preference: an explicitly labelled value such as "70 Power".
-    for index in range(start, end):
-        match = EXPLICIT_POWER_RE.search(lines[index])
-        if not match:
-            continue
-        value = next((group for group in match.groups() if group is not None), None)
-        if value and 2 <= int(value) <= 160:
-            candidates.append((abs(index - mission_index), 0, int(value)))
-
-    if candidates:
-        return min(candidates)[2]
-
-    # Some trackers render a table with a separate "PL" / "Power Level"
-    # column, leaving a bare number in the same row. Only use a bare number
-    # when that column heading is present on the source page.
-    if has_power_column:
-        for index in range(max(start, mission_index - 5), mission_index + 1):
-            match = re.fullmatch(r"\s*(\d{1,3})\s*", lines[index])
-            if match:
-                value = int(match.group(1))
-                if 2 <= value <= 160:
-                    candidates.append((abs(index - mission_index), 1, value))
-
-    return min(candidates)[2] if candidates else None
-
-
-def extract_missions(text, source):
-    lines = _normal_lines(text)
-    if not lines:
-        return []
-
-    # Only use a bare PL number if the page itself labels a PL/Power Level
-    # column alongside mission information. This prevents arbitrary numbers
-    # (reward amounts, mission category numbers, etc.) becoming Power Levels.
-    has_power_column = bool(
-        re.search(r"\bPower\s*Level\b", text, re.I)
-        or re.search(r"\bPL\b.{0,100}\bMISSION\b", text, re.I | re.S)
-        or re.search(r"\bMISSION\b.{0,100}\bPL\b", text, re.I | re.S)
-    )
-
-    reward_rows = []
+def extract_html_missions(text: str, source: str) -> list[dict[str, Any]]:
+    """Conservative fallback parser for sources that server-render card text."""
+    lines = [re.sub(r"\s+", " ", x).strip(" -|•·") for x in text.splitlines()]
+    lines = [x for x in lines if x]
+    reward_rows: list[tuple[int, int]] = []
     for index, line in enumerate(lines):
         match = REWARD_RE.search(line)
-        if not match:
-            continue
-        reward_text = next((group for group in match.groups() if group is not None), None)
-        if not reward_text:
-            continue
-        reward = int(reward_text)
-        if 0 < reward <= 5000:
-            reward_rows.append((index, reward))
+        if match:
+            raw = next((group for group in match.groups() if group is not None), None)
+            if raw:
+                amount = int(raw)
+                if 0 < amount <= 5000:
+                    reward_rows.append((index, amount))
 
-    found = []
-    seen = set()
-
+    parsed: list[dict[str, Any]] = []
     for row_number, (reward_index, reward) in enumerate(reward_rows):
-        # Restrict each search to the text between adjacent reward rows. A
-        # wider card window is needed because nested page markup creates many
-        # text breaks between mission title, location, PL and reward.
-        previous_reward = reward_rows[row_number - 1][0] if row_number else -1
-        start = max(previous_reward + 1, reward_index - 45, 0)
-        end = min(
-            reward_rows[row_number + 1][0] if row_number + 1 < len(reward_rows) else len(lines),
-            reward_index + 4,
-        )
-        if end <= start:
+        previous = reward_rows[row_number - 1][0] if row_number else -1
+        next_index = reward_rows[row_number + 1][0] if row_number + 1 < len(reward_rows) else len(lines)
+        start = max(previous + 1, reward_index - 40, 0)
+        end = min(next_index, reward_index + 4, len(lines))
+        card_lines = lines[start:end]
+        mission_candidates = []
+        for idx, line in enumerate(card_lines, start):
+            for name in MISSION_NAMES:
+                if re.search(re.escape(name), line, re.I):
+                    mission_candidates.append((abs(idx - reward_index), -len(name), idx, name))
+        if not mission_candidates:
             continue
+        _, _, mission_index, mission = min(mission_candidates)
 
-        mission_info = _mission_at(lines, start, end, reward_index)
-        if not mission_info:
+        zone_candidates = []
+        for idx, line in enumerate(card_lines, start):
+            for raw_zone, zone in ZONE_ALIASES.items():
+                if re.search(re.escape(raw_zone), line.replace("_", " "), re.I):
+                    zone_candidates.append((abs(idx - mission_index), idx, zone))
+        if not zone_candidates:
             continue
-        _, _, mission_index, mission = mission_info
+        _, zone_index, zone = min(zone_candidates)
 
-        zone_info = _zone_at(lines, start, end, mission_index)
-        if not zone_info:
-            continue
-        _, zone_index, zone = zone_info
-
-        location = ""
-        # A location is usually printed immediately after the mission title.
-        for candidate in lines[mission_index + 1:min(end, mission_index + 5)]:
-            if not any(re.search(re.escape(z), candidate, re.I) for z in ZONES):
-                if (
-                    len(candidate) < 80
-                    and not re.search(
-                        r"V[- ]?Bucks|Power|Founders|reward|mission|Category",
-                        candidate,
-                        re.I,
-                    )
-                ):
-                    location = candidate
+        power_level = None
+        for line in card_lines:
+            match = EXPLICIT_POWER_RE.search(line)
+            if match:
+                candidate = next((group for group in match.groups() if group is not None), None)
+                power_level = _valid_power_level(candidate)
+                if power_level is not None:
                     break
 
-        power_level = _power_level(
-            lines,
-            start,
-            end,
-            mission_index,
-            has_power_column,
-        )
+        location = ""
+        for line in lines[mission_index + 1:min(end, mission_index + 5)]:
+            if len(line) < 80 and not re.search(r"V[- ]?Bucks|Power|Founders|reward|mission|Category", line, re.I):
+                location = line
+                break
 
-        item = {
+        item: dict[str, Any] = {
             "mission": mission,
             "zone": zone,
             "location": location,
             "vbucks": reward,
             "source": source,
+            "sources": [source],
         }
         if power_level is not None:
             item["powerLevel"] = power_level
-
-        key = (mission.lower(), zone.lower(), reward)
-        if key not in seen:
-            found.append(item)
-            seen.add(key)
-
-    return found
+        parsed.append(item)
+    return _deduplicate(parsed)
 
 
-def clean_power_levels(obj):
-    if isinstance(obj, dict):
-        if "powerLevel" in obj:
-            try:
-                level = int(obj["powerLevel"])
-            except (TypeError, ValueError):
-                level = 0
-            if level < 2 or level > 160:
-                obj.pop("powerLevel", None)
-        for value in obj.values():
-            clean_power_levels(value)
-    elif isinstance(obj, list):
-        for value in obj:
-            clean_power_levels(value)
-    return obj
-
-
-def load_json(path, default):
+def load_json(path: Path, default: Any) -> Any:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return default
 
 
-def main():
-    now = (
-        datetime.now(timezone.utc)
-        .replace(microsecond=0)
-        .isoformat()
-        .replace("+00:00", "Z")
-    )
-    today = date.today().isoformat()
+def _clean_power_levels(value: Any) -> Any:
+    if isinstance(value, dict):
+        if "powerLevel" in value:
+            pl = _valid_power_level(value.get("powerLevel"))
+            if pl is None:
+                value.pop("powerLevel", None)
+            else:
+                value["powerLevel"] = pl
+        for child in value.values():
+            _clean_power_levels(child)
+    elif isinstance(value, list):
+        for child in value:
+            _clean_power_levels(child)
+    return value
 
-    old = clean_power_levels(
-        load_json(MISSIONS_FILE, {"today": [], "confirmed": False, "sources": []})
-    )
-    history = clean_power_levels(load_json(HISTORY_FILE, {"days": []}))
 
-    source_results = []
-    all_missions = []
+def _find_day(history_days: list[dict[str, Any]], day: str) -> dict[str, Any] | None:
+    return next((entry for entry in history_days if entry.get("date") == day), None)
 
-    for name, url in SOURCES:
-        entry = {
-            "name": name,
-            "url": url,
-            "ok": False,
-            "summary": {},
-            "missionCount": 0,
-            "powerLevelCount": 0,
-            "checkedAt": now,
-        }
-        try:
-            page = fetch(url)
-            summary = find_summary(page)
-            missions = extract_missions(page, name)
-            entry.update({
-                "ok": True,
-                "summary": summary,
-                "missionCount": len(missions),
-                "powerLevelCount": sum(m.get("powerLevel") is not None for m in missions),
-                "status": "Fetched public page",
-            })
-            all_missions.extend(missions)
-        except Exception as error:
-            entry["status"] = "Fetch failed: " + str(error)[:180]
 
-        source_results.append(entry)
-        time.sleep(0.5)
+def _recover_today(old: dict[str, Any], history_days: list[dict[str, Any]], today: str) -> list[dict[str, Any]]:
+    """Recover a previously confirmed same-day snapshot if a source fails."""
+    saved_day = _find_day(history_days, today)
+    if saved_day and saved_day.get("confirmed") and isinstance(saved_day.get("missions"), list):
+        return saved_day["missions"]
+    if old.get("confirmed") and isinstance(old.get("today"), list) and old["today"]:
+        return old["today"]
+    return []
 
-    # Merge duplicate missions while preserving a Power Level from whichever
-    # source supplied it. No value is fabricated when every source omits it.
-    dedup = {}
-    for mission in all_missions:
-        key = (
-            mission["mission"].lower(),
-            mission["zone"].lower(),
-            mission["vbucks"],
-        )
-        if key not in dedup:
-            dedup[key] = dict(mission, sources=[mission["source"]])
-        else:
-            existing = dedup[key]
-            if existing.get("powerLevel") is None and mission.get("powerLevel") is not None:
-                existing["powerLevel"] = mission["powerLevel"]
-            if not existing.get("location") and mission.get("location"):
-                existing["location"] = mission["location"]
-            if mission["source"] not in existing["sources"]:
-                existing["sources"].append(mission["source"])
 
-    today_missions = list(dedup.values())
-    confirmed = bool(today_missions) and any(s["ok"] for s in source_results)
+def _yesterday_missions(old: dict[str, Any], history_days: list[dict[str, Any]], today: str) -> list[dict[str, Any]]:
+    yesterday_date = (date.fromisoformat(today) - timedelta(days=1)).isoformat()
+    saved = _find_day(history_days, yesterday_date)
+    if saved and isinstance(saved.get("missions"), list):
+        return saved["missions"]
+    value = old.get("yesterday", [])
+    return value if isinstance(value, list) else []
 
-    # If every source temporarily fails to expose rows, retain the last saved
-    # rows but mark them unconfirmed. Never replace them with a fake zero list.
-    if not today_missions and old.get("confirmed") and old.get("today"):
-        today_missions = old["today"]
+
+def main() -> None:
+    now_dt = utc_now()
+    now = iso_z(now_dt)
+    today = now_dt.date().isoformat()
+
+    old = _clean_power_levels(load_json(MISSIONS_FILE, {"today": [], "confirmed": False, "sources": []}))
+    history = _clean_power_levels(load_json(HISTORY_FILE, {"days": []}))
+    history_days = history.get("days", []) if isinstance(history, dict) else []
+    if not isinstance(history_days, list):
+        history_days = []
+
+    source_results: list[dict[str, Any]] = []
+    selected_missions: list[dict[str, Any]] = []
+    authoritative_feed = False
+
+    # Primary: PennyDB structured JSON. A valid missions object is authoritative
+    # even when it contains no V-Bucks alerts for the day (a genuine zero).
+    penny_entry: dict[str, Any] = {
+        "name": "PennyDB",
+        "url": PENNYDB_API,
+        "ok": False,
+        "summary": {},
+        "missionCount": 0,
+        "powerLevelCount": 0,
+        "checkedAt": now,
+    }
+    try:
+        payload = fetch_json(PENNYDB_API)
+        penny_missions = parse_pennydb_payload(payload)
+        authoritative_feed = True
+        selected_missions = penny_missions
+        penny_entry.update({
+            "ok": True,
+            "missionCount": len(penny_missions),
+            "powerLevelCount": sum(item.get("powerLevel") is not None for item in penny_missions),
+            "status": "Fetched structured mission JSON",
+        })
+    except (HTTPError, URLError, TimeoutError, OSError, ValueError, RuntimeError) as error:
+        penny_entry["status"] = "Structured API unavailable: " + str(error)[:180]
+    source_results.append(penny_entry)
+
+    # Fallback: only scrape HTML trackers if PennyDB did not provide a valid
+    # structured mission payload. This prevents stale HTML data overriding a
+    # valid (including legitimately empty) PennyDB rotation.
+    if not authoritative_feed:
+        fallback_missions: list[dict[str, Any]] = []
+        for name, url in FALLBACK_SOURCES:
+            entry = {
+                "name": name,
+                "url": url,
+                "ok": False,
+                "summary": {},
+                "missionCount": 0,
+                "powerLevelCount": 0,
+                "checkedAt": now,
+            }
+            try:
+                page = fetch_text(url)
+                missions = extract_html_missions(page, name)
+                entry.update({
+                    "ok": True,
+                    "summary": find_summary(page),
+                    "missionCount": len(missions),
+                    "powerLevelCount": sum(item.get("powerLevel") is not None for item in missions),
+                    "status": "Fetched public HTML page",
+                })
+                fallback_missions.extend(missions)
+            except (HTTPError, URLError, TimeoutError, OSError, ValueError, RuntimeError) as error:
+                entry["status"] = "Fetch failed: " + str(error)[:180]
+            source_results.append(entry)
+            time.sleep(0.25)
+        selected_missions = _deduplicate(fallback_missions)
+
+    # A valid PennyDB response is authoritative, including an empty daily set.
+    # If all live sources fail, recover today's last confirmed archive instead
+    # of publishing a misleading empty board.
+    source_reachable = any(source.get("ok") for source in source_results)
+    if authoritative_feed:
+        today_missions = selected_missions
+        confirmed = True
+        status = "confirmed"
+    elif selected_missions:
+        today_missions = selected_missions
+        confirmed = True
+        status = "confirmed"
+    else:
+        today_missions = _recover_today(old, history_days, today)
         confirmed = False
+        status = "partial" if source_reachable else "unavailable"
 
-    record = {
+    # Always maintain consistent source attribution, even for merged fallback rows.
+    today_missions = _deduplicate(today_missions)
+
+    archive_record = {
         "date": today,
         "checkedAt": now,
         "confirmed": confirmed,
@@ -430,73 +542,57 @@ def main():
                 "name": source["name"],
                 "url": source["url"],
                 "ok": source["ok"],
-                "summary": source["summary"],
+                "summary": source.get("summary", {}),
+                "missionCount": source.get("missionCount", 0),
+                "powerLevelCount": source.get("powerLevelCount", 0),
                 "status": source.get("status", "No status"),
             }
             for source in source_results
         ],
     }
 
-    days = history.get("days", [])
-    existing_index = next(
-        (index for index, item in enumerate(days) if item.get("date") == today),
-        None,
-    )
-
+    existing_index = next((i for i, item in enumerate(history_days) if item.get("date") == today), None)
     if existing_index is None:
-        days.append(record)
+        history_days.append(archive_record)
     else:
-        previous = days[existing_index]
-        if confirmed or not previous.get("confirmed"):
-            days[existing_index] = record
+        prior = history_days[existing_index]
+        # A failed/partial fetch must not erase a previously confirmed same-day snapshot.
+        if confirmed or not prior.get("confirmed"):
+            history_days[existing_index] = archive_record
         else:
-            previous["checkedAt"] = now
-            previous["sourceSummaries"] = record["sourceSummaries"]
+            prior["checkedAt"] = now
+            prior["sourceSummaries"] = archive_record["sourceSummaries"]
 
-    days = sorted(days, key=lambda item: item.get("date", ""))[-400:]
-    history_output = {"updatedAt": now, "days": days}
+    history_days = sorted(history_days, key=lambda item: item.get("date", ""))[-400:]
+    history_output = {"updatedAt": now, "days": history_days}
 
     output = {
         "updatedAt": now,
         "confirmed": confirmed,
-        "status": (
-            "confirmed"
-            if confirmed
-            else "partial"
-            if any(source["ok"] for source in source_results)
-            else "unavailable"
-        ),
+        "status": status,
         "today": today_missions,
-        "yesterday": old.get("yesterday", []),
+        "yesterday": _yesterday_missions(old, history_days, today),
         "sources": source_results,
-        "historyDays": len(days),
-        "historyAvailable": bool(days),
+        "historyDays": len(history_days),
+        "historyAvailable": bool(history_days),
     }
 
     DATA.mkdir(parents=True, exist_ok=True)
-    MISSIONS_FILE.write_text(
-        json.dumps(output, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-    HISTORY_FILE.write_text(
-        json.dumps(history_output, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
+    MISSIONS_FILE.write_text(json.dumps(output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    HISTORY_FILE.write_text(json.dumps(history_output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
-    power_count = sum(mission.get("powerLevel") is not None for mission in today_missions)
+    power_count = sum(item.get("powerLevel") is not None for item in today_missions)
     print(
-        f"Checked {len(SOURCES)} sources; "
-        f"{sum(source['ok'] for source in source_results)} reachable; "
+        f"Checked {len(source_results)} source(s); "
+        f"{sum(bool(source.get('ok')) for source in source_results)} reachable; "
         f"{len(today_missions)} mission rows; "
-        f"{power_count} rows with source-labelled Power Levels; "
-        f"{len(days)} archived days."
+        f"{power_count} rows with source-provided Power Levels; "
+        f"source={'PennyDB structured API' if authoritative_feed else 'HTML fallback / archive'}; "
+        f"{len(history_days)} archived days."
     )
 
-    if not any(source["ok"] for source in source_results):
-        sys.exit(
-            "All public mission sources failed; saved source statuses "
-            "without inventing mission rows or Power Levels."
-        )
+    if not source_reachable:
+        sys.exit("All live mission sources failed; preserved any last confirmed data without inventing missions or Power Levels.")
 
 
 if __name__ == "__main__":
