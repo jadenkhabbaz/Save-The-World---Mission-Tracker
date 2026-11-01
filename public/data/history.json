@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-01T16:26:26Z",
+  "updatedAt": "2026-11-01T20:10:30Z",
   "days": [
     {
       "date": "2026-10-27",
@@ -305,7 +305,7 @@
     },
     {
       "date": "2026-11-01",
-      "checkedAt": "2026-11-01T16:26:26Z",
+      "checkedAt": "2026-11-01T20:10:30Z",
       "confirmed": true,
       "missions": [
         {
@@ -328,6 +328,7 @@
           "summary": {},
           "missionCount": 1,
           "powerLevelCount": 1,
+          "locationCount": 0,
           "status": "Fetched structured mission JSON"
         }
       ]
