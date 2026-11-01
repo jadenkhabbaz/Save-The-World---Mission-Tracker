@@ -1,124 +1,96 @@
-    elif authoritative_feed and penny_ok:
-        # A valid structured response with zero V-Bucks missions is still
-        # a successful live check, but do not erase previously confirmed
-        # mission data based on an empty parse.
-        today_missions = _recover_today(old, history_days, today)
-        confirmed = False
-        status = "partial" if source_reachable else "unavailable"
+#!/usr/bin/env python3
+"""Fetch Fortnite Save the World V-Bucks missions and maintain daily history."""
 
-    else:
-        today_missions = _recover_today(
-            old, history_days, today
-        )
-        confirmed = False
-        status = "partial" if source_reachable else "unavailable"
+from __future__ import annotations
 
-    today_missions = _deduplicate(today_missions)
+import json
+import re
+import sys
+import time
+from datetime import date, datetime, timedelta, timezone
+from html.parser import HTMLParser
+from pathlib import Path
+from typing import Any
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
-    archive_record = {
-        "date": today,
-        "checkedAt": now,
-        "confirmed": confirmed,
-        "missions": today_missions,
-        "sourceSummaries": [
-            {
-                "name": source["name"],
-                "url": source["url"],
-                "ok": source["ok"],
-                "summary": source.get("summary", {}),
-                "missionCount": source.get("missionCount", 0),
-                "powerLevelCount": source.get("powerLevelCount", 0),
-                "locationCount": source.get("locationCount", 0),
-                "status": source.get("status", "No status"),
-            }
-            for source in source_results
-        ],
-    }
+ROOT = Path(__file__).resolve().parent.parent
+DATA = ROOT / "public" / "data"
+MISSIONS_FILE = DATA / "missions.json"
+HISTORY_FILE = DATA / "history.json"
 
-    existing_index = next(
-        (
-            i for i, item in enumerate(history_days)
-            if item.get("date") == today
-        ),
-        None,
-    )
+PENNYDB_API = "https://pennydb.net/api"
 
-    if existing_index is None:
-        history_days.append(archive_record)
+FALLBACK_SOURCES = [
+    ("HawkBucks", "https://hawkbucks.com/vbucks-missions"),
+    ("V-Bucks Daily", "https://vbucksdaily.com/"),
+    ("SaveTheWorldDB", "https://savetheworlddb.com/"),
+    ("FortniteDB", "https://v2.fortnitedb.com/"),
+]
 
-    else:
-        prior = history_days[existing_index]
+ZONE_ALIASES = {
+    "stonewood": "Stonewood",
+    "plankerton": "Plankerton",
+    "canny valley": "Canny Valley",
+    "twine peaks": "Twine Peaks",
+    "ventures": "Ventures",
+}
 
-        if confirmed or not prior.get("confirmed"):
-            history_days[existing_index] = archive_record
+MISSION_NAMES = (
+    "Fight Category 4 Storm",
+    "Fight Category 3 Storm",
+    "Fight Category 2 Storm",
+    "Fight Category 1 Storm",
+    "Fight the Storm",
+    "Deliver the Bomb",
+    "Ride the Lightning",
+    "Retrieve the Data",
+    "Repair the Shelter",
+    "Evacuate the Shelter",
+    "Rescue the Survivors",
+    "Build the Radar Grid",
+    "Build the Radar",
+    "Destroy the Encampments",
+    "Eliminate and Collect",
+    "Resupply",
+)
 
-        else:
-            prior["checkedAt"] = now
-            prior["sourceSummaries"] = archive_record[
-                "sourceSummaries"
-            ]
+REWARD_RE = re.compile(
+    r"V[- ]?Bucks\s*(?:(?:x|×)\s*)?(\d{1,4})\b"
+    r"|\b(?:x|×)\s*(\d{1,4})\s*V[- ]?Bucks"
+    r"|\b(\d{1,4})\s*V[- ]?Bucks",
+    re.I,
+)
 
-    history_days = sorted(
-        history_days,
-        key=lambda item: item.get("date", ""),
-    )[-400:]
-
-    history_output = {
-        "updatedAt": now,
-        "days": history_days,
-    }
-
-    output = {
-        "updatedAt": now,
-        "confirmed": confirmed,
-        "status": status,
-        "today": today_missions,
-        "yesterday": _yesterday_missions(
-            old, history_days, today
-        ),
-        "sources": source_results,
-        "historyDays": len(history_days),
-        "historyAvailable": bool(history_days),
-    }
-
-    DATA.mkdir(parents=True, exist_ok=True)
-
-    MISSIONS_FILE.write_text(
-        json.dumps(output, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-
-    HISTORY_FILE.write_text(
-        json.dumps(history_output, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-
-    power_count = sum(
-        item.get("powerLevel") is not None
-        for item in today_missions
-    )
-
-    location_count = sum(
-        bool(item.get("location"))
-        for item in today_missions
-    )
-
-    print(
-        f"Checked {len(source_results)} source(s); "
-        f"{sum(bool(source.get('ok')) for source in source_results)} reachable; "
-        f"{len(today_missions)} mission rows; "
-        f"{power_count} rows with source-provided Power Levels; "
-        f"{location_count} rows with source-provided locations; "
-        f"source={'PennyDB structured API' if authoritative_feed else 'HTML fallback / archive'}; "
-        f"{len(history_days)} archived days."
-    )
-
-    if not source_reachable:
-        sys.exit(
-            "All live mission sources failed; preserved any last "
-            "confirmed data without inventing missions or Power Levels."
-        )
+EXPLICIT_POWER_RE = re.compile(
+    r"\bPL\s*[:#-]?\s*(\d{1,3})\b"
+    r"|\bPower\s*Level\s*[:#-]?\s*(\d{1,3})\b"
+    r"|\b(\d{1,3})\s*PL\b"
+    r"|\b(\d{1,3})\s*Power\b",
+    re.I,
+)
 
 
-if __name__ == "__main__":
-    main()
+def utc_now() -> datetime:
+    return datetime.now(timezone.utc).replace(microsecond=0)
+
+
+def iso_z(value: datetime) -> str:
+    return value.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _as_int(value: Any) -> int | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
+    if isinstance(value, str):
+        match = re.fullmatch(r"\s*(?:PL\s*)?(\d{1,3})\s*", value, re.I)
+        if match:
+            return int(match.group(1))
+    return None
+
+
+def _valid_power_level(value: Any) -> int | None:
