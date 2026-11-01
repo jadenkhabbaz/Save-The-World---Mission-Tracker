@@ -1,19 +1,8 @@
 {
-  "updatedAt": "2026-11-01T07:37:23Z",
+  "updatedAt": "2026-11-01T07:38:18Z",
   "confirmed": false,
   "status": "partial",
-  "today": [
-    {
-      "mission": "Fight Category 2 Storm",
-      "zone": "Canny Valley",
-      "location": "",
-      "vbucks": 50,
-      "source": "HawkBucks",
-      "sources": [
-        "HawkBucks"
-      ]
-    }
-  ],
+  "today": [],
   "yesterday": [
     {
       "mission": "Evacuate the Shelter",
@@ -46,7 +35,7 @@
       },
       "missionCount": 0,
       "powerLevelCount": 0,
-      "checkedAt": "2026-11-01T07:37:23Z",
+      "checkedAt": "2026-11-01T07:38:18Z",
       "status": "Fetched public page"
     },
     {
@@ -61,7 +50,7 @@
       },
       "missionCount": 0,
       "powerLevelCount": 0,
-      "checkedAt": "2026-11-01T07:37:23Z",
+      "checkedAt": "2026-11-01T07:38:18Z",
       "status": "Fetched public page"
     },
     {
@@ -73,7 +62,7 @@
       },
       "missionCount": 0,
       "powerLevelCount": 0,
-      "checkedAt": "2026-11-01T07:37:23Z",
+      "checkedAt": "2026-11-01T07:38:18Z",
       "status": "Fetched public page"
     },
     {
@@ -89,7 +78,7 @@
       },
       "missionCount": 0,
       "powerLevelCount": 0,
-      "checkedAt": "2026-11-01T07:37:23Z",
+      "checkedAt": "2026-11-01T07:38:18Z",
       "status": "Fetched public page"
     }
   ],
