@@ -114,21 +114,26 @@ def _mission_name(raw: Any) -> str:
 
 
 def _mission_location(raw_mission: dict[str, Any]) -> str:
-    """Extract a location only when it is explicitly present in source data."""
+    """Extract city, subzone, or mission tile from source data."""
 
     location_keys = (
-        "location",
-        "locationName",
-        "missionLocation",
-        "missionLocationName",
-        "tile",
-        "tileName",
-        "tileLocation",
-        "tileLocationName",
-        "subzone",
+        "cityName",
+        "city_name",
+        "city",
         "subzoneName",
+        "subzone",
+        "tileName",
+        "tile",
+        "locationName",
+        "location",
+        "missionLocationName",
+        "missionLocation",
+        "tileLocationName",
+        "tileLocation",
         "areaName",
         "mapName",
+        "districtName",
+        "district",
     )
 
     ignored = {
@@ -140,7 +145,17 @@ def _mission_location(raw_mission: dict[str, Any]) -> str:
     }
 
     def search(data: Any, depth: int = 0) -> str:
-        if depth > 5 or not isinstance(data, dict):
+        if depth > 8:
+            return ""
+
+        if isinstance(data, list):
+            for item in data:
+                result = search(item, depth + 1)
+                if result:
+                    return result
+            return ""
+
+        if not isinstance(data, dict):
             return ""
 
         for key in location_keys:
@@ -152,15 +167,25 @@ def _mission_location(raw_mission: dict[str, Any]) -> str:
                     return value
 
             elif isinstance(value, dict):
-                for display_key in ("displayName", "name", "label", "title", "value"):
+                for display_key in (
+                    "displayName",
+                    "name",
+                    "label",
+                    "title",
+                    "value",
+                ):
                     display_value = value.get(display_key)
+
                     if isinstance(display_value, str):
                         display_value = display_value.strip()
-                        if display_value and display_value.casefold() not in ignored:
+                        if (
+                            display_value
+                            and display_value.casefold() not in ignored
+                        ):
                             return display_value
 
         for value in data.values():
-            if isinstance(value, dict):
+            if isinstance(value, (dict, list)):
                 result = search(value, depth + 1)
                 if result:
                     return result
