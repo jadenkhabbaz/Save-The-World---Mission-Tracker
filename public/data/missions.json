@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-02T00:47:35Z",
+  "updatedAt": "2026-11-02T06:35:54Z",
   "confirmed": true,
   "status": "confirmed",
   "today": [
@@ -37,7 +37,7 @@
       "missionCount": 1,
       "powerLevelCount": 1,
       "locationCount": 0,
-      "checkedAt": "2026-11-02T00:47:35Z",
+      "checkedAt": "2026-11-02T06:35:54Z",
       "status": "Fetched structured mission JSON"
     },
     {
@@ -54,7 +54,7 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-02T00:47:35Z",
+      "checkedAt": "2026-11-02T06:35:54Z",
       "status": "Page reachable, but no mission cards were parsed"
     }
   ],
