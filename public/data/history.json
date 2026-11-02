@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-01T20:51:00Z",
+  "updatedAt": "2026-11-02T00:47:35Z",
   "days": [
     {
       "date": "2026-10-27",
@@ -341,6 +341,52 @@
             "last7Days": 400,
             "last30Days": 50,
             "thisYear": 9850
+          },
+          "missionCount": 0,
+          "powerLevelCount": 0,
+          "locationCount": 0,
+          "status": "Page reachable, but no mission cards were parsed"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-02",
+      "checkedAt": "2026-11-02T00:47:35Z",
+      "confirmed": true,
+      "missions": [
+        {
+          "mission": "Fight Category 3 Storm",
+          "zone": "Twine Peaks",
+          "location": "",
+          "vbucks": 50,
+          "source": "PennyDB",
+          "sources": [
+            "PennyDB"
+          ],
+          "powerLevel": 76
+        }
+      ],
+      "sourceSummaries": [
+        {
+          "name": "PennyDB",
+          "url": "https://pennydb.net/api",
+          "ok": true,
+          "summary": {},
+          "missionCount": 1,
+          "powerLevelCount": 1,
+          "locationCount": 0,
+          "status": "Fetched structured mission JSON"
+        },
+        {
+          "name": "HawkBucks",
+          "url": "https://hawkbucks.com/vbucks-missions",
+          "ok": true,
+          "summary": {
+            "today": 50,
+            "yesterday": 50,
+            "last7Days": 50,
+            "last30Days": 100,
+            "thisYear": 9900
           },
           "missionCount": 0,
           "powerLevelCount": 0,
