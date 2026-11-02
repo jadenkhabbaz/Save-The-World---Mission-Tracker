@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-11-02T06:54:52Z",
+  "updatedAt": "2026-11-02T07:11:36Z",
   "confirmed": true,
   "status": "confirmed",
   "today": [
     {
       "mission": "Fight Category 3 Storm",
       "zone": "Twine Peaks",
-      "location": "Twine Peaks",
+      "location": "",
       "vbucks": 50,
       "source": "PennyDB",
       "sources": [
@@ -33,29 +33,21 @@
       "name": "PennyDB",
       "url": "https://pennydb.net/api",
       "ok": true,
-      "summary": {},
       "missionCount": 1,
       "powerLevelCount": 1,
-      "locationCount": 1,
-      "checkedAt": "2026-11-02T06:54:52Z",
-      "status": "Fetched structured mission JSON"
+      "locationCount": 0,
+      "checkedAt": "2026-11-02T07:11:36Z",
+      "status": "Fetched structured mission data"
     },
     {
       "name": "HawkBucks",
-      "url": "https://hawkbucks.com/vbucks-missions",
+      "url": "https://hawkbucks.com/en",
       "ok": true,
-      "summary": {
-        "today": 50,
-        "yesterday": 50,
-        "last7Days": 50,
-        "last30Days": 100,
-        "thisYear": 9900
-      },
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-02T06:54:52Z",
-      "status": "Page reachable, but no mission cards were parsed"
+      "checkedAt": "2026-11-02T07:11:36Z",
+      "status": "Page fetched, but mission cards were not parsed"
     }
   ],
   "historyDays": 7,
