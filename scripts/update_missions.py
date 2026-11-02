@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 """Fetch Fortnite Save the World V-Bucks missions and maintain daily history."""
 
@@ -114,7 +115,7 @@ def _mission_name(raw: Any) -> str:
 
 
 def _mission_location(raw_mission: dict[str, Any]) -> str:
-    """Extract a location only when it is explicitly present in source data."""
+    """Extract an explicitly supplied sub-location, if available."""
 
     location_keys = (
         "location",
@@ -209,9 +210,7 @@ def _mission_vbucks_amount(mission: dict[str, Any]) -> int | None:
     return None
 
 
-def _deduplicate(
-    missions: list[dict[str, Any]]
-) -> list[dict[str, Any]]:
+def _deduplicate(missions: list[dict[str, Any]]) -> list[dict[str, Any]]:
     result: dict[tuple[str, str, int], dict[str, Any]] = {}
 
     for mission in missions:
@@ -224,8 +223,7 @@ def _deduplicate(
         if key not in result:
             result[key] = dict(mission)
             result[key]["sources"] = list(
-                mission.get("sources")
-                or [mission.get("source", "Unknown")]
+                mission.get("sources") or [mission.get("source", "Unknown")]
             )
             continue
 
@@ -240,9 +238,7 @@ def _deduplicate(
         if not existing.get("location") and mission.get("location"):
             existing["location"] = mission["location"]
 
-        for source in mission.get("sources") or [
-            mission.get("source", "Unknown")
-        ]:
+        for source in mission.get("sources") or [mission.get("source", "Unknown")]:
             if source and source not in existing["sources"]:
                 existing["sources"].append(source)
 
@@ -250,11 +246,9 @@ def _deduplicate(
 
 
 def parse_pennydb_payload(payload: Any) -> list[dict[str, Any]]:
-    """Parse PennyDB's structured mission response and debug V-Bucks rows."""
+    """Parse PennyDB's structured mission response."""
 
-    if not isinstance(payload, dict) or not isinstance(
-        payload.get("missions"), dict
-    ):
+    if not isinstance(payload, dict) or not isinstance(payload.get("missions"), dict):
         raise ValueError("PennyDB response is missing the missions object")
 
     raw_zones = payload["missions"]
@@ -268,9 +262,7 @@ def parse_pennydb_payload(payload: Any) -> list[dict[str, Any]]:
             continue
 
         if not isinstance(entries, list):
-            raise ValueError(
-                f"PennyDB zone {raw_zone!r} is not a list"
-            )
+            raise ValueError(f"PennyDB zone {raw_zone!r} is not a list")
 
         recognized_zone_arrays += 1
 
@@ -283,32 +275,25 @@ def parse_pennydb_payload(payload: Any) -> list[dict[str, Any]]:
             if quantity is None:
                 continue
 
-            # TEMPORARY DEBUG: print the complete source object so we can
-            # identify the real location and Power Level fields.
-            print("\n========== PENNYDB MISSION DEBUG ==========")
-            print("ZONE:", zone)
-            print(json.dumps(raw_mission, indent=2, ensure_ascii=False))
-            print("========== END MISSION DEBUG ==========\n")
-
-            mission_name = _mission_name(
-                raw_mission.get("missionType")
-            )
+            mission_name = _mission_name(raw_mission.get("missionType"))
 
             if not mission_name:
                 continue
 
+            # PennyDB's parent zone is a reliable location fallback.
+            # A more specific location is used when the API supplies one.
+            location = _mission_location(raw_mission) or zone
+
             item: dict[str, Any] = {
                 "mission": mission_name,
                 "zone": zone,
-                "location": _mission_location(raw_mission),
+                "location": location,
                 "vbucks": quantity,
                 "source": "PennyDB",
                 "sources": ["PennyDB"],
             }
 
-            power_level = _valid_power_level(
-                raw_mission.get("pl")
-            )
+            power_level = _valid_power_level(raw_mission.get("pl"))
 
             if power_level is not None:
                 item["powerLevel"] = power_level
@@ -445,9 +430,7 @@ def find_summary(text: str) -> dict[str, int]:
     return result
 
 
-def extract_html_missions(
-    text: str, source: str
-) -> list[dict[str, Any]]:
+def extract_html_missions(text: str, source: str) -> list[dict[str, Any]]:
     """Conservative fallback parser for server-rendered mission cards."""
 
     lines = [
@@ -476,10 +459,7 @@ def extract_html_missions(
     parsed: list[dict[str, Any]] = []
 
     for row_number, (reward_index, reward) in enumerate(reward_rows):
-        previous = (
-            reward_rows[row_number - 1][0]
-            if row_number else -1
-        )
+        previous = reward_rows[row_number - 1][0] if row_number else -1
 
         next_index = (
             reward_rows[row_number + 1][0]
@@ -541,9 +521,7 @@ def extract_html_missions(
 
         location = ""
 
-        for line in lines[
-            mission_index + 1:min(end, mission_index + 5)
-        ]:
+        for line in lines[mission_index + 1:min(end, mission_index + 5)]:
             if (
                 len(line) < 80
                 and not re.search(
@@ -558,7 +536,7 @@ def extract_html_missions(
         item: dict[str, Any] = {
             "mission": mission,
             "zone": zone,
-            "location": location,
+            "location": location or zone,
             "vbucks": reward,
             "source": source,
             "sources": [source],
@@ -680,7 +658,6 @@ def main() -> None:
     selected_missions: list[dict[str, Any]] = []
     authoritative_feed = False
 
-    # PennyDB structured mission source.
     penny_entry: dict[str, Any] = {
         "name": "PennyDB",
         "url": PENNYDB_API,
@@ -725,7 +702,6 @@ def main() -> None:
 
     source_results.append(penny_entry)
 
-    # HawkBucks is fetched every run for location and PL enrichment.
     hawk_entry: dict[str, Any] = {
         "name": "HawkBucks",
         "url": "https://hawkbucks.com/vbucks-missions",
@@ -770,11 +746,8 @@ def main() -> None:
 
     source_results.append(hawk_entry)
 
-    # Merge by mission + zone + reward.
     selected_missions = _deduplicate(penny_missions + hawk_missions)
 
-    # Other public pages are used only if both primary sources provide
-    # no usable mission rows.
     if not selected_missions:
         fallback_missions: list[dict[str, Any]] = []
 
@@ -841,9 +814,7 @@ def main() -> None:
         status = "partial" if source_reachable else "unavailable"
 
     else:
-        today_missions = _recover_today(
-            old, history_days, today
-        )
+        today_missions = _recover_today(old, history_days, today)
         confirmed = False
         status = "partial" if source_reachable else "unavailable"
 
@@ -885,12 +856,9 @@ def main() -> None:
 
         if confirmed or not prior.get("confirmed"):
             history_days[existing_index] = archive_record
-
         else:
             prior["checkedAt"] = now
-            prior["sourceSummaries"] = archive_record[
-                "sourceSummaries"
-            ]
+            prior["sourceSummaries"] = archive_record["sourceSummaries"]
 
     history_days = sorted(
         history_days,
@@ -942,7 +910,7 @@ def main() -> None:
         f"{sum(bool(source.get('ok')) for source in source_results)} reachable; "
         f"{len(today_missions)} mission rows; "
         f"{power_count} rows with source-provided Power Levels; "
-        f"{location_count} rows with source-provided locations; "
+        f"{location_count} rows with location values; "
         f"source={'PennyDB structured API' if authoritative_feed else 'HTML fallback / archive'}; "
         f"{len(history_days)} archived days."
     )
