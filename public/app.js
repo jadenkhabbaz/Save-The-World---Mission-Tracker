@@ -19,6 +19,18 @@ function missionIcon(name) {
 function missionImage(name) {
   const n = String(name || "").toLowerCase();
 
+  if (n.includes("build the radar grid"))
+    return "assets/missions/build-the-radar-grid.png";
+
+  if (n.includes("deliver the bomb"))
+    return "assets/missions/deliver-the-bomb.png";
+
+  if (n.includes("destroy the encampments"))
+    return "assets/missions/destroy-the-encampments.png";
+
+  if (n.includes("eliminate and collect"))
+    return "assets/missions/eliminate-and-collect.png";
+
   if (n.includes("evacuate the shelter"))
     return "assets/missions/evacuate-the-shelter.png";
 
@@ -32,8 +44,14 @@ function missionImage(name) {
   )
     return "assets/missions/fight-the-storm-triple-atlas.png";
 
+  if (n.includes("repair the shelter"))
+    return "assets/missions/repair-the-shelter.png";
+
   if (n.includes("retrieve the data"))
     return "assets/missions/retrieve-the-data.png";
+
+  if (n.includes("ride the lightning"))
+    return "assets/missions/ride-the-lightning.png";
 
   return null;
 }
