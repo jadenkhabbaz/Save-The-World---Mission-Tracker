@@ -1,20 +1,8 @@
 {
-  "updatedAt": "2026-11-03T00:03:16Z",
+  "updatedAt": "2026-11-03T05:47:04Z",
   "confirmed": false,
   "status": "partial",
-  "today": [
-    {
-      "mission": "Fight Category 3 Storm",
-      "zone": "Twine Peaks",
-      "location": "",
-      "vbucks": 50,
-      "source": "PennyDB",
-      "sources": [
-        "PennyDB"
-      ],
-      "powerLevel": 76
-    }
-  ],
+  "today": [],
   "yesterday": [
     {
       "mission": "Fight Category 3 Storm",
@@ -36,7 +24,7 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-03T00:03:16Z",
+      "checkedAt": "2026-11-03T05:47:04Z",
       "status": "Fetched structured mission data"
     },
     {
@@ -46,7 +34,7 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-03T00:03:16Z",
+      "checkedAt": "2026-11-03T05:47:04Z",
       "status": "Page fetched, but mission cards were not parsed"
     }
   ],
