@@ -7,8 +7,8 @@ function missionIcon(name) {
   const n = String(name || "").toLowerCase();
   if (n.includes("evacuate the shelter")) return "assets/missions/evacuate-the-shelter.png";
   if (n.includes("fight category 2 storm")) return "assets/missions/fight-category-2-storm.png";
-  if (n.includes("survivor")) return "🧑‍🚀";
-  if (n.includes("storm")) return "⛈️";
+  if (n.includes("survivor")) return "assets/missions/";
+  if (n.includes("storm")) return "assets/missions/FIGHT THE STORM.png";
   if (n.includes("bomb")) return "💣";
   if (n.includes("lightning")) return "⚡";
   if (n.includes("shelter")) return "🏠";
