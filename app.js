@@ -8,14 +8,14 @@ function missionIcon(name) {
   if (n.includes("evacuate the shelter")) return "assets/missions/evacuate-the-shelter.png";
   if (n.includes("fight category 2 storm")) return "assets/missions/fight-category-2-storm.png";
   if (n.includes("survivor")) return "assets/missions/";
-  if (n.includes("storm")) return "assets/missions/FIGHT THE STORM.png";
-  if (n.includes("bomb")) return "💣";
-  if (n.includes("lightning")) return "⚡";
-  if (n.includes("shelter")) return "🏠";
-  if (n.includes("radar")) return "📡";
-  if (n.includes("encampment")) return "🔥";
-  if (n.includes("data")) return "💾";
-  return "🎯";
+  if (n.includes("storm")) return "assets/missions/fight-the-storm-single-atlas.png"; 
+  if (n.includes("bomb")) return "assets/missions/deliver-the-bomb.png";
+  if (n.includes("lightning")) return "assets/missions/ride-the-lightning.png"; 
+  if (n.includes("shelter")) return "🏠";  
+  if (n.includes("radar")) return "assets/missions/build-the-radar-grid.png"; 
+  if (n.includes("encampment")) return "assets/missions/destroy-the-encampments.png"; 
+  if (n.includes("data")) return "assets/missions/retrieve-the-data.png";
+
 }
 
 function renderMissions() {
