@@ -1,8 +1,9 @@
 {
-  "updatedAt": "2026-11-04T22:14:22Z",
-  "confirmed": true,
-  "status": "confirmed",
-  "today": [
+  "updatedAt": "2026-11-05T02:33:30Z",
+  "confirmed": false,
+  "status": "partial",
+  "today": [],
+  "yesterday": [
     {
       "mission": "Fight the Storm",
       "zone": "Canny Valley",
@@ -15,16 +16,15 @@
       "powerLevel": 58
     }
   ],
-  "yesterday": [],
   "sources": [
     {
       "name": "PennyDB",
       "url": "https://pennydb.net/api",
       "ok": true,
-      "missionCount": 1,
-      "powerLevelCount": 1,
+      "missionCount": 0,
+      "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-04T22:14:22Z",
+      "checkedAt": "2026-11-05T02:33:30Z",
       "status": "Fetched structured mission data"
     },
     {
@@ -34,10 +34,10 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-04T22:14:22Z",
+      "checkedAt": "2026-11-05T02:33:30Z",
       "status": "Page fetched, but mission cards were not parsed"
     }
   ],
-  "historyDays": 9,
+  "historyDays": 10,
   "historyAvailable": true
 }
