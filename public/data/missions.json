@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-05T18:02:52Z",
+  "updatedAt": "2026-11-05T23:40:19Z",
   "confirmed": false,
   "status": "partial",
   "today": [],
@@ -24,7 +24,7 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-05T18:02:52Z",
+      "checkedAt": "2026-11-05T23:40:19Z",
       "status": "Fetched structured mission data"
     },
     {
@@ -34,7 +34,7 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-05T18:02:52Z",
+      "checkedAt": "2026-11-05T23:40:19Z",
       "status": "Page fetched, but mission cards were not parsed"
     }
   ],
