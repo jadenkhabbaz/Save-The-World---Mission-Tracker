@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-07T20:20:45Z",
+  "updatedAt": "2026-11-07T20:25:19Z",
   "days": [
     {
       "date": "2026-10-27",
@@ -538,7 +538,7 @@
     },
     {
       "date": "2026-11-07",
-      "checkedAt": "2026-11-07T20:20:45Z",
+      "checkedAt": "2026-11-07T20:25:19Z",
       "confirmed": true,
       "missions": [
         {
@@ -574,7 +574,7 @@
           "missionCount": 2,
           "powerLevelCount": 2,
           "locationCount": 0,
-          "checkedAt": "2026-11-07T20:20:45Z",
+          "checkedAt": "2026-11-07T20:25:19Z",
           "status": "Fetched structured mission data"
         },
         {
@@ -584,7 +584,7 @@
           "missionCount": 2,
           "powerLevelCount": 2,
           "locationCount": 2,
-          "checkedAt": "2026-11-07T20:20:45Z",
+          "checkedAt": "2026-11-07T20:25:19Z",
           "status": "Parsed mission rows from embedded queryState"
         }
       ]
