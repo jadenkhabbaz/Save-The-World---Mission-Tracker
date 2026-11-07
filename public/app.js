@@ -36,6 +36,9 @@ function missionImage(name) {
 
   if (n.includes("fight category 2 storm"))
     return "assets/missions/fight-category-2-storm.png";
+  
+  if (n.includes("fight category 4 storm"))
+  return "assets/missions/fight-the-storm-four-atlas.png";
 
   if (
     n.includes("fight category 3 storm") ||
