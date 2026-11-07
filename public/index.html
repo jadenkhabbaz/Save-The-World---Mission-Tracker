@@ -3,82 +3,104 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#07111f">
+  <meta name="theme-color" content="#080d19">
+  <meta name="description" content="JadBakerX Save the World daily V-Bucks mission tracker.">
   <title>JadBakerX | Save the World V-Bucks Tracker</title>
   <link rel="icon" href="vbucks-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Rajdhani:wght@500;600;700;800&family=Teko:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="visual-cleanup.css">
   <link rel="stylesheet" href="premium-redesign.css">
   <link rel="stylesheet" href="power-level-upgrade.css">
+  <link rel="stylesheet" href="fortnite-ui.css">
 </head>
 <body>
 <header>
-  <a class="brand" href="./">
+  <a class="brand" href="./" aria-label="JadBakerX Save the World Daily Tracker home">
     <img src="vbucks-logo.png" alt="V-Bucks logo">
-    <span><small>JadBakerX PRESENTS</small><b>SAVE THE WORLD <em>DAILY TRACKER</em></b></span>
+    <span><small>JADBAKERX PRESENTS</small><b>SAVE THE WORLD <em>DAILY TRACKER</em></b></span>
   </a>
-  <nav>
-    <a href="#missions">Missions</a>
-    <a href="schematics.html">Schematics <span class="nav-soon">SOON</span></a>
-    <a class="contact" href="https://guns.lol/jadbakerx" target="_blank" rel="noopener">Contact me ↗</a>
+  <nav aria-label="Main navigation">
+    <a class="nav-current" href="#missions">✥ MISSIONS</a>
+    <a href="schematics.html">⬡ SCHEMATICS <span class="nav-soon">SOON</span></a>
+    <button id="soundToggle" class="sound-toggle" type="button" aria-pressed="true" title="Toggle sound effects"><span id="soundIcon">◖))</span><span id="soundLabel">SFX ON</span></button>
+    <a class="contact" href="https://guns.lol/jadbakerx" target="_blank" rel="noopener">CONTACT ↗</a>
   </nav>
 </header>
 <main>
   <section class="hero">
-    <div>
-      <span class="pill">● SAVE THE WORLD · DAILY INTEL</span>
-      <h1>Your daily<br><em>V-Bucks hunt.</em></h1>
-      <p>Today's rewards in Save the World grind.</p>
-      <a class="cta" href="#missions">View mission board ↓</a>
+    <div class="hero-copy">
+      <span class="pill"><i></i> SAVE THE WORLD • DAILY INTEL</span>
+      <h1>YOUR DAILY<br><em>V-BUCKS HUNT.</em></h1>
+      <p>Today's alert rewards in the Save the World grind. Track mission alerts, power levels, and claim your daily V-Bucks before the reset.</p>
+      <div class="hero-actions">
+        <a class="cta" href="#missions">VIEW MISSION BOARD <span>↓</span></a>
+        <button id="seeBotOpen" class="see-bot-trigger" type="button"><span class="bot-mini">▣</span> ASK SEE-BOT</button>
+      </div>
     </div>
-    <div class="hero-coin">
-      <img src="vbucks-logo.png" alt="V-Bucks coin">
+    <div class="hero-coin" aria-hidden="true">
+      <div class="coin-aura"></div><div class="coin-ring"></div>
+      <img src="vbucks-logo.png" alt="">
       <span>SAVE THE WORLD / ALERTS</span>
     </div>
   </section>
+
   <section class="summary">
-    <small>TODAY'S STATUS</small>
-    <div class="numbers">
-      <div><b id="todayTotal">0</b><span>V-Bucks today</span></div>
-      <i></i>
-      <div><b id="todayCount">0</b><span>missions listed</span></div>
+    <div class="summary-heading"><small>TODAY'S STATUS</small><span class="live-status"><i></i> LIVE MISSION INTEL</span></div>
+    <div class="summary-content">
+      <div class="numbers">
+        <div><b id="todayTotal">0</b><span>V-BUCKS TODAY</span></div>
+        <i></i>
+        <div><b id="todayCount">0</b><span>MISSIONS LISTED</span></div>
+      </div>
+      <div class="summary-detail"><p id="todayNote">Loading today's mission information…</p><button id="copyDaily" type="button" class="copy-daily">▣ COPY DAILY SUMMARY</button></div>
     </div>
-    <p id="todayNote">Loading today's mission information…</p>
   </section>
+
   <section id="missions">
     <div class="heading">
-      <div><small>MISSION BOARD</small><h2>Pick your run.</h2></div>
-      <span id="updated">Live data not connected</span>
+      <div><small>MISSION BOARD</small><h2>PICK YOUR RUN.</h2></div>
+      <span id="updated">Checking mission intel…</span>
     </div>
-    <div class="tabs">
-      <button class="tab active" type="button">Today <span id="todayBadge">0</span></button>
-    </div>
+    <div class="tabs"><button class="tab active" type="button">TODAY <span id="todayBadge">0</span></button></div>
     <div class="filters">
       <label>ZONE
         <select id="zone">
-          <option value="">All zones</option>
-          <option>Stonewood</option>
-          <option>Plankerton</option>
-          <option>Canny Valley</option>
-          <option>Twine Peaks</option>
-          <option>Ventures</option>
+          <option value="">All zones</option><option>Stonewood</option><option>Plankerton</option><option>Canny Valley</option><option>Twine Peaks</option><option>Ventures</option>
         </select>
       </label>
-      <label>SEARCH<input id="search" placeholder="Mission or location…"></label>
-      <button id="refresh" type="button">↻ Refresh</button>
+      <label>SEARCH<input id="search" type="search" placeholder="Mission or location…"></label>
+      <button id="refresh" type="button"><span id="refreshIcon">↻</span> REFRESH</button>
     </div>
-    <div id="missionsList" class="missions"></div>
+    <div id="missionsList" class="missions" aria-live="polite"></div>
   </section>
+
   <section class="bottom">
     <img src="vbucks-logo.png" alt="">
-    <div><small>BUILT FOR THE GRIND</small><h2>One more mission?</h2><p>Unofficial fan-made tracker by <b>JadBakerX</b>.</p></div>
-    <a href="https://guns.lol/jadbakerx" target="_blank" rel="noopener">Find me ↗</a>
+    <div><small>BUILT FOR THE GRIND</small><h2>ONE MORE MISSION?</h2><p>Unofficial fan-made Save the World tracker by <b>JadBakerX</b>.</p></div>
+    <a href="https://guns.lol/jadbakerx" target="_blank" rel="noopener">FIND ME ↗</a>
   </section>
 </main>
-<footer>
-  <span>© <span id="year"></span> JadBakerX · Unofficial fan project</span>
-  <span>Not affiliated with Epic Games.</span>
-</footer>
+<footer><span>© <span id="year"></span> JadBakerX · Unofficial fan project</span><span>Not affiliated with Epic Games. Fortnite and Save the World are trademarks of Epic Games.</span></footer>
+
+<div id="seeBotModal" class="see-bot-modal" aria-hidden="true">
+  <button class="modal-backdrop" type="button" data-close-see-bot aria-label="Close See-Bot"></button>
+  <section class="see-bot-panel" role="dialog" aria-modal="true" aria-labelledby="seeBotTitle">
+    <button id="seeBotClose" class="modal-close" type="button" aria-label="Close">×</button>
+    <div class="see-bot-heading">
+      <div class="see-bot-avatar" aria-hidden="true"><span>▣</span><i></i></div>
+      <div><h2 id="seeBotTitle">SEE-BOT INTEL</h2><small>QUIET PLEASE. I AM SEEING.</small></div>
+    </div>
+    <div class="see-bot-screen">
+      <div class="screen-label"><i></i> DAILY SCAN REPORT</div>
+      <p id="seeBotText">Scanning today's verified V-Bucks alerts…</p>
+    </div>
+    <div class="see-bot-actions"><button id="seeBotCopy" type="button" class="copy-daily">▣ COPY REPORT</button><button id="seeBotDone" type="button" class="cta">THANK YOU, SEE-BOT</button></div>
+  </section>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script src="app.js"></script>
 <script src="branding.js"></script>
 </body>
