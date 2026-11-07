@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""Automatic Save the World V-Bucks mission updater."""
+"""Automatic Save the World V-Bucks mission updater.
+
+Reads PennyDB's structured mission data and HawkBucks' embedded React Query
+state. HawkBucks mission objects use:
+  area       = larger region (Canny Valley, Twine Peaks, etc.)
+  zone       = actual in-game zone/tile label (Desert, Grasslands, etc.)
+The public JSON keeps the existing frontend contract: zone=area and
+location=the mission's actual in-game zone label.
+"""
 
 import json
 import re
@@ -13,18 +21,14 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "public" / "data"
 MISSIONS_FILE = DATA / "missions.json"
 HISTORY_FILE = DATA / "history.json"
-
 PENNYDB_API = "https://pennydb.net/api"
 HAWKBUCKS_URL = "https://hawkbucks.com/en"
 
 ZONES = {
-    "stonewood": "Stonewood",
-    "plankerton": "Plankerton",
-    "canny valley": "Canny Valley",
-    "twine peaks": "Twine Peaks",
+    "stonewood": "Stonewood", "plankerton": "Plankerton",
+    "canny valley": "Canny Valley", "twine peaks": "Twine Peaks",
     "ventures": "Ventures",
 }
-
 MISSION_NAMES = (
     "Fight Category 4 Storm", "Fight Category 3 Storm",
     "Fight Category 2 Storm", "Fight Category 1 Storm",
@@ -33,21 +37,14 @@ MISSION_NAMES = (
     "Rescue the Survivors", "Build the Radar Grid", "Build the Radar",
     "Destroy the Encampments", "Eliminate and Collect", "Resupply",
 )
-
 REWARD_RE = re.compile(
     r"V[- ]?Bucks\s*(?:(?:x|×)\s*)?(\d{1,4})"
     r"|\b(?:x|×)\s*(\d{1,4})\s*V[- ]?Bucks"
-    r"|\b(\d{1,4})\s*V[- ]?Bucks", re.I
-)
+    r"|\b(\d{1,4})\s*V[- ]?Bucks", re.I)
 POWER_RE = re.compile(
     r"\bPL\s*[:#-]?\s*(\d{1,3})\b"
     r"|\bPower\s*Level\s*[:#-]?\s*(\d{1,3})\b"
-    r"|\b(\d{1,3})\s*PL\b"
-    r"|\b(\d{1,3})\s*Power\b", re.I
-)
-LOCATION_LABEL_RE = re.compile(
-    r"^(?:location|city|area|tile|subzone|mission location)\s*[:\-]\s*(.+)$", re.I
-)
+    r"|\b(\d{1,3})\s*PL\b", re.I)
 
 
 def now_utc():
@@ -58,250 +55,236 @@ def timestamp():
     return now_utc().isoformat().replace("+00:00", "Z")
 
 
-def get_json(url):
-    request = Request(url, headers={
+def fetch(url, accept):
+    req = Request(url, headers={
         "User-Agent": "Mozilla/5.0 JadBakerX-STW-Tracker",
-        "Accept": "application/json",
+        "Accept": accept,
     })
-    with urlopen(request, timeout=30) as response:
-        return json.loads(response.read().decode("utf-8", "replace"))
-
-
-def get_html(url):
-    request = Request(url, headers={
-        "User-Agent": "Mozilla/5.0 JadBakerX-STW-Tracker",
-        "Accept": "text/html,application/xhtml+xml",
-    })
-    with urlopen(request, timeout=30) as response:
+    with urlopen(req, timeout=30) as response:
         return response.read().decode("utf-8", "replace")
 
 
-class PageParser(HTMLParser):
-    """Extract visible text and useful location attributes from HTML."""
-
-    BLOCKS = {"div", "section", "article", "p", "li", "tr", "td", "th",
-              "h1", "h2", "h3", "h4", "br"}
-    SKIP = {"script", "style", "noscript", "svg"}
-
-    def __init__(self):
-        super().__init__(convert_charrefs=True)
-        self.parts = []
-        self.skip_depth = 0
-
-    def handle_starttag(self, tag, attrs):
-        attrs = dict(attrs)
-        if tag in self.SKIP:
-            self.skip_depth += 1
-            return
-        if self.skip_depth:
-            return
-        for key in (
-            "alt", "aria-label", "title", "data-location", "data-city",
-            "data-tile", "data-subzone", "data-power-level",
-            "data-powerlevel", "data-pl", "data-power",
-        ):
-            value = attrs.get(key)
-            if value:
-                self.parts.append("\n" + value + "\n")
-        if tag in self.BLOCKS:
-            self.parts.append("\n")
-
-    def handle_endtag(self, tag):
-        if tag in self.SKIP:
-            if self.skip_depth:
-                self.skip_depth -= 1
-            return
-        if not self.skip_depth and tag in self.BLOCKS:
-            self.parts.append("\n")
-
-    def handle_data(self, data):
-        if not self.skip_depth:
-            self.parts.append(data)
-
-
-def html_to_lines(html):
-    parser = PageParser()
-    parser.feed(html)
-    text = "\n".join(parser.parts)
-    text = re.sub(r"[ \t\xa0]+", " ", text)
-    return [re.sub(r"\s+", " ", line).strip(" -|•·")
-            for line in text.splitlines() if line.strip()]
+def get_json(url):
+    return json.loads(fetch(url, "application/json"))
 
 
 def zone_name(value):
-    value = str(value or "").replace("_", " ").strip().casefold()
-    return ZONES.get(value)
+    return ZONES.get(str(value or "").replace("_", " ").strip().casefold())
 
 
 def valid_pl(value):
     try:
-        number = int(value)
-        return number if 1 <= number <= 160 else None
+        n = int(value)
+        return n if 1 <= n <= 160 else None
     except (TypeError, ValueError):
         return None
-
-
-def first_match_group(match):
-    return next((group for group in match.groups() if group is not None), None)
-
-
-def mission_name(value):
-    if isinstance(value, dict):
-        for key in ("name", "displayName", "type"):
-            if value.get(key):
-                return str(value[key]).strip()
-    return str(value or "").strip()
 
 
 def is_vbucks_reward(reward):
     if not isinstance(reward, dict):
         return False
-    item_type = str(reward.get("itemType") or reward.get("templateId") or "").casefold()
+    kind = str(reward.get("itemType") or reward.get("templateId") or "").casefold()
     name = re.sub(r"[\s_-]+", "", str(reward.get("name") or "").casefold())
-    return ("currency_mtxswap" in item_type or "mtxswap" in item_type
-            or "vbucks" in name or "vbuck" in name)
+    return "currency_mtxswap" in kind or "mtxswap" in kind or "vbucks" in name or "vbuck" in name
 
 
 def pennydb_missions(payload):
-    """Get V-Bucks mission, zone and Power Level data from PennyDB."""
-    if not isinstance(payload, dict):
-        raise ValueError("Invalid PennyDB response")
-    raw_zones = payload.get("missions")
-    if not isinstance(raw_zones, dict):
+    if not isinstance(payload, dict) or not isinstance(payload.get("missions"), dict):
         raise ValueError("PennyDB missions object missing")
-
     result = []
-    for raw_zone, entries in raw_zones.items():
-        zone = zone_name(raw_zone)
-        if not zone or not isinstance(entries, list):
+    for raw_area, entries in payload["missions"].items():
+        area = zone_name(raw_area)
+        if not area or not isinstance(entries, list):
             continue
         for mission in entries:
             if not isinstance(mission, dict):
                 continue
-            rewards = mission.get("alertRewards") or mission.get("rewards") or []
             amount = None
-            for reward in rewards:
-                if not is_vbucks_reward(reward):
-                    continue
-                try:
-                    candidate = int(reward.get("quantity"))
-                except (TypeError, ValueError):
-                    continue
-                if 0 < candidate <= 5000:
-                    amount = candidate
-                    break
+            for reward in mission.get("alertRewards") or mission.get("rewards") or []:
+                if is_vbucks_reward(reward):
+                    try:
+                        candidate = int(reward.get("quantity"))
+                        if 0 < candidate <= 5000:
+                            amount = candidate
+                            break
+                    except (TypeError, ValueError):
+                        pass
             if amount is None:
                 continue
-            name = mission_name(mission.get("missionType"))
+            raw_name = mission.get("missionType") or ""
+            name = raw_name.get("name") or raw_name.get("displayName") or raw_name.get("type") if isinstance(raw_name, dict) else str(raw_name)
             if not name:
                 continue
-            item = {
-                "mission": name, "zone": zone, "location": "",
-                "vbucks": amount, "source": "PennyDB", "sources": ["PennyDB"],
-            }
+            item = {"mission": str(name), "zone": area, "location": "", "vbucks": amount,
+                    "source": "PennyDB", "sources": ["PennyDB"]}
             pl = valid_pl(mission.get("pl"))
-            if pl is not None:
+            if pl:
                 item["powerLevel"] = pl
             result.append(item)
     return result
 
 
-def is_bad_location(value, zone):
-    value = str(value or "").strip()
-    if not value or len(value) > 65 or value.casefold() == zone.casefold():
-        return True
-    if zone_name(value) or REWARD_RE.search(value) or POWER_RE.search(value):
-        return True
-    if any(re.search(re.escape(name), value, re.I) for name in MISSION_NAMES):
-        return True
-    return bool(re.search(
-        r"v-bucks|founders|mission alert|daily|weekly|reward|available|"
-        r"completed|details|save the world|fortnite|power level", value, re.I
-    ))
-
-
-def find_location(card_lines, mission_index, zone):
-    """Find an explicit location label or a likely location line."""
-    for line in card_lines:
-        match = LOCATION_LABEL_RE.match(line)
+def decode_query_state(html):
+    """Decode the queryState JSON string embedded in HawkBucks page HTML."""
+    patterns = (
+        r'queryState\s*:\s*("(?:\\.|[^"\\])*")',
+        r'["\']queryState["\']\s*:\s*("(?:\\.|[^"\\])*")',
+    )
+    for pattern in patterns:
+        match = re.search(pattern, html)
         if match:
-            candidate = match.group(1).strip()
-            if not is_bad_location(candidate, zone):
-                return candidate
-    for line in card_lines:
-        candidate = line.strip()
-        if not is_bad_location(candidate, zone):
-            return candidate
-    return ""
+            raw = json.loads(match.group(1))
+            if isinstance(raw, str):
+                return json.loads(raw)
+            if isinstance(raw, dict):
+                return raw
+    # Some builds serialize the state directly as an object rather than a string.
+    match = re.search(r'["\']queryState["\']\s*:\s*(\{.*?\})\s*[,}]', html, re.S)
+    if match:
+        try:
+            return json.loads(match.group(1))
+        except json.JSONDecodeError:
+            pass
+    return None
 
 
-def hawkbucks_missions(html):
-    """Extract HawkBucks mission cards, zones, locations and rewards."""
-    lines = html_to_lines(html)
-    reward_rows = []
-    for index, line in enumerate(lines):
-        match = REWARD_RE.search(line)
-        if match:
-            raw = first_match_group(match)
-            if raw:
-                amount = int(raw)
-                if 0 < amount <= 5000:
-                    reward_rows.append((index, amount))
+def walk(value):
+    if isinstance(value, dict):
+        yield value
+        for child in value.values():
+            yield from walk(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from walk(child)
+
+
+def mission_rows_from_query_state(query_state):
+    """Read mission objects from React Query's dehydrated [\"missions\"] query."""
+    if not isinstance(query_state, dict):
+        return []
+    queries = query_state.get("queries", [])
+    if not isinstance(queries, list):
+        return []
+
+    mission_objects = []
+    for query in queries:
+        if not isinstance(query, dict):
+            continue
+        key = query.get("queryKey") or []
+        if not (isinstance(key, list) and key and str(key[0]).casefold() == "missions"):
+            continue
+        state = query.get("state") or {}
+        data = state.get("data") if isinstance(state, dict) else None
+        for obj in walk(data):
+            if all(k in obj for k in ("name", "area", "zone", "vbucks")):
+                mission_objects.append(obj)
 
     result = []
-    for row_number, (reward_index, reward) in enumerate(reward_rows):
-        previous = reward_rows[row_number - 1][0] if row_number else -1
-        next_index = (reward_rows[row_number + 1][0]
-                      if row_number + 1 < len(reward_rows) else len(lines))
-        start = max(previous + 1, reward_index - 40, 0)
-        end = min(next_index, reward_index + 5, len(lines))
-        card_lines = lines[start:end]
-
-        candidates = []
-        for index, line in enumerate(card_lines):
-            for name in MISSION_NAMES:
-                if re.search(re.escape(name), line, re.I):
-                    candidates.append((abs((start + index) - reward_index), -len(name), name))
-        if not candidates:
+    seen = set()
+    for obj in mission_objects:
+        try:
+            amount = int(obj.get("vbucks"))
+        except (TypeError, ValueError):
             continue
-        _, _, name = min(candidates)
-
-        zone_candidates = []
-        for line in card_lines:
-            for raw_zone, zone in ZONES.items():
-                if re.search(re.escape(raw_zone), line, re.I):
-                    zone_candidates.append(zone)
-        if not zone_candidates:
+        if not 0 < amount <= 5000:
             continue
-        zone = zone_candidates[0]
-
-        pl = None
-        for line in card_lines:
-            match = POWER_RE.search(line)
-            if match:
-                pl = valid_pl(first_match_group(match))
-                if pl is not None:
-                    break
-
-        mission_index = next((start + i for i, line in enumerate(card_lines)
-                              if re.search(re.escape(name), line, re.I)), start)
-        location = find_location(card_lines[mission_index - start + 1:], mission_index, zone)
+        name = str(obj.get("name") or "").strip()
+        area_raw = str(obj.get("area") or "").strip()
+        actual_zone = str(obj.get("zone") or "").strip()
+        area = zone_name(area_raw)
+        if not name or not area or not actual_zone:
+            continue
+        # Deduplicate the same mission if the query state nests it more than once.
+        ident = (str(obj.get("id") or ""), name.casefold(), area.casefold(), actual_zone.casefold(), amount)
+        if ident in seen:
+            continue
+        seen.add(ident)
         item = {
-            "mission": name, "zone": zone, "location": location,
-            "vbucks": reward, "source": "HawkBucks", "sources": ["HawkBucks"],
+            "mission": name,
+            "zone": area,
+            "location": actual_zone,
+            "vbucks": amount,
+            "source": "HawkBucks",
+            "sources": ["HawkBucks"],
         }
-        if pl is not None:
+        pl = valid_pl(obj.get("powerLevel") or obj.get("pl"))
+        if pl:
             item["powerLevel"] = pl
         result.append(item)
     return result
 
 
+class TextParser(HTMLParser):
+    BLOCKS = {"div", "section", "article", "p", "li", "tr", "td", "th", "h1", "h2", "h3", "h4", "br"}
+    SKIP = {"script", "style", "noscript", "svg"}
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.parts, self.skip = [], 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag in self.SKIP:
+            self.skip += 1
+        elif not self.skip and tag in self.BLOCKS:
+            self.parts.append("\n")
+
+    def handle_endtag(self, tag):
+        if tag in self.SKIP and self.skip:
+            self.skip -= 1
+        elif not self.skip and tag in self.BLOCKS:
+            self.parts.append("\n")
+
+    def handle_data(self, data):
+        if not self.skip:
+            self.parts.append(data)
+
+
+def hawkbucks_fallback_html(html):
+    """Legacy visible-text parser; queryState extraction is preferred."""
+    parser = TextParser()
+    parser.feed(html)
+    lines = [re.sub(r"\s+", " ", x).strip(" -|•") for x in "\n".join(parser.parts).splitlines() if x.strip()]
+    out = []
+    for i, line in enumerate(lines):
+        reward = REWARD_RE.search(line)
+        if not reward:
+            continue
+        amount = next((g for g in reward.groups() if g), None)
+        if not amount:
+            continue
+        start, end = max(0, i - 30), min(len(lines), i + 4)
+        block = lines[start:end]
+        name = next((n for n in MISSION_NAMES if any(re.search(re.escape(n), x, re.I) for x in block)), None)
+        area = next((z for x in block for raw, z in ZONES.items() if re.search(re.escape(raw), x, re.I)), None)
+        if not name or not area:
+            continue
+        pl = None
+        for x in block:
+            m = POWER_RE.search(x)
+            if m:
+                pl = valid_pl(next((g for g in m.groups() if g), None))
+                if pl:
+                    break
+        out.append({"mission": name, "zone": area, "location": "", "vbucks": int(amount),
+                    "source": "HawkBucks", "sources": ["HawkBucks"], **({"powerLevel": pl} if pl else {})})
+    return out
+
+
+def hawkbucks_missions(html):
+    state = decode_query_state(html)
+    if state is not None:
+        rows = mission_rows_from_query_state(state)
+        if rows:
+            return rows, "Parsed mission rows from embedded queryState"
+    rows = hawkbucks_fallback_html(html)
+    return rows, ("Parsed legacy mission cards" if rows else
+                  "Page fetched, but no mission rows were found in queryState or visible page text")
+
+
 def merge_missions(penny, hawk):
-    """Merge matching mission records while retaining source details."""
     merged = {}
     for item in penny + hawk:
-        key = (re.sub(r"\s+", " ", item["mission"]).casefold(),
-               item["zone"].casefold(), int(item["vbucks"]))
+        key = (re.sub(r"\s+", " ", item["mission"]).casefold(), item["zone"].casefold(), int(item["vbucks"]))
         if key not in merged:
             merged[key] = dict(item)
             merged[key]["sources"] = list(item.get("sources", []))
@@ -309,10 +292,9 @@ def merge_missions(penny, hawk):
         current = merged[key]
         if not current.get("powerLevel") and item.get("powerLevel"):
             current["powerLevel"] = item["powerLevel"]
-        location = item.get("location", "")
-        if location and not is_bad_location(location, current["zone"]):
-            if not current.get("location"):
-                current["location"] = location
+        # HawkBucks' `zone` is the actual map tile label; preserve it as location.
+        if item.get("location") and not current.get("location"):
+            current["location"] = item["location"]
         for source in item.get("sources", []):
             if source not in current["sources"]:
                 current["sources"].append(source)
@@ -332,119 +314,71 @@ def save_json(path, value):
 
 
 def find_history_day(days, target):
-    for entry in days:
-        if entry.get("date") == target:
-            return entry
-    return None
+    return next((entry for entry in days if entry.get("date") == target), None)
 
 
 def main():
     checked_at = timestamp()
     today = now_utc().date().isoformat()
     yesterday = (now_utc().date() - timedelta(days=1)).isoformat()
-
     old = load_json(MISSIONS_FILE, {"today": [], "yesterday": [], "sources": []})
     history = load_json(HISTORY_FILE, {"days": []})
-    days = history.get("days", [])
-    if not isinstance(days, list):
-        days = []
+    days = history.get("days", []) if isinstance(history.get("days", []), list) else []
+    penny, hawk, sources = [], [], []
 
-    source_results = []
-    penny = []
-    hawk = []
-
-    penny_status = {
-        "name": "PennyDB", "url": PENNYDB_API, "ok": False,
-        "missionCount": 0, "powerLevelCount": 0, "locationCount": 0,
-        "checkedAt": checked_at,
-    }
+    pstatus = {"name": "PennyDB", "url": PENNYDB_API, "ok": False, "missionCount": 0,
+              "powerLevelCount": 0, "locationCount": 0, "checkedAt": checked_at}
     try:
         penny = pennydb_missions(get_json(PENNYDB_API))
-        penny_status.update({
-            "ok": True, "missionCount": len(penny),
-            "powerLevelCount": sum(item.get("powerLevel") is not None for item in penny),
-            "locationCount": sum(bool(item.get("location")) for item in penny),
-            "status": "Fetched structured mission data",
-        })
-    except Exception as error:
-        penny_status["status"] = f"Fetch failed: {str(error)[:180]}"
-    source_results.append(penny_status)
+        pstatus.update(ok=True, missionCount=len(penny),
+                       powerLevelCount=sum(bool(x.get("powerLevel")) for x in penny),
+                       locationCount=sum(bool(x.get("location")) for x in penny),
+                       status="Fetched structured mission data")
+    except Exception as exc:
+        pstatus["status"] = f"Fetch failed: {str(exc)[:180]}"
+    sources.append(pstatus)
 
-    hawk_status = {
-        "name": "HawkBucks", "url": HAWKBUCKS_URL, "ok": False,
-        "missionCount": 0, "powerLevelCount": 0, "locationCount": 0,
-        "checkedAt": checked_at,
-    }
+    hstatus = {"name": "HawkBucks", "url": HAWKBUCKS_URL, "ok": False, "missionCount": 0,
+              "powerLevelCount": 0, "locationCount": 0, "checkedAt": checked_at}
     try:
-        hawk = hawkbucks_missions(get_html(HAWKBUCKS_URL))
-        hawk_status.update({
-            "ok": True, "missionCount": len(hawk),
-            "powerLevelCount": sum(item.get("powerLevel") is not None for item in hawk),
-            "locationCount": sum(bool(item.get("location")) for item in hawk),
-            "status": "Fetched HawkBucks mission cards" if hawk
-                      else "Page fetched, but mission cards were not parsed",
-        })
-    except Exception as error:
-        hawk_status["status"] = f"Fetch failed: {str(error)[:180]}"
-    source_results.append(hawk_status)
+        hawk, message = hawkbucks_missions(fetch(HAWKBUCKS_URL, "text/html,application/xhtml+xml"))
+        hstatus.update(ok=True, missionCount=len(hawk),
+                       powerLevelCount=sum(bool(x.get("powerLevel")) for x in hawk),
+                       locationCount=sum(bool(x.get("location")) for x in hawk), status=message)
+    except Exception as exc:
+        hstatus["status"] = f"Fetch failed: {str(exc)[:180]}"
+    sources.append(hstatus)
 
-    # IMPORTANT: today's board contains only rows fetched during this run.
-    # Never fall back to old['today'] or today's previous history snapshot.
     missions = merge_missions(penny, hawk)
     confirmed = bool(missions)
-    if confirmed:
-        status = "confirmed"
-    else:
-        status = "partial" if any(source.get("ok") for source in source_results) else "unavailable"
-
-    # Do not display a location that merely repeats the zone name.
-    for item in missions:
-        location = str(item.get("location") or "").strip()
-        zone = str(item.get("zone") or "").strip()
-        if location.casefold() == zone.casefold():
-            item["location"] = ""
-
-    # Keep yesterday's saved missions for the Yesterday display.
+    status = "confirmed" if confirmed else ("partial" if any(s["ok"] for s in sources) else "unavailable")
     saved_yesterday = find_history_day(days, yesterday)
-    yesterday_missions = (saved_yesterday.get("missions", [])
-                          if saved_yesterday else old.get("yesterday", []))
+    yesterday_missions = saved_yesterday.get("missions", []) if saved_yesterday else old.get("yesterday", [])
 
-    # Replace today's history snapshot even when the current result is empty.
-    record = {
-        "date": today, "checkedAt": checked_at, "confirmed": confirmed,
-        "missions": missions, "sourceSummaries": source_results,
-    }
+    record = {"date": today, "checkedAt": checked_at, "confirmed": confirmed,
+              "missions": missions, "sourceSummaries": sources}
     existing = find_history_day(days, today)
     if existing:
         days[days.index(existing)] = record
     else:
         days.append(record)
-    days.sort(key=lambda item: item.get("date", ""))
+    days.sort(key=lambda x: x.get("date", ""))
     days = days[-400:]
 
-    output = {
-        "updatedAt": checked_at, "confirmed": confirmed, "status": status,
-        "today": missions, "yesterday": yesterday_missions,
-        "sources": source_results, "historyDays": len(days),
-        "historyAvailable": bool(days),
-    }
-    history_output = {"updatedAt": checked_at, "days": days}
+    output = {"updatedAt": checked_at, "confirmed": confirmed, "status": status,
+              "today": missions, "yesterday": yesterday_missions, "sources": sources,
+              "historyDays": len(days), "historyAvailable": bool(days)}
     save_json(MISSIONS_FILE, output)
-    save_json(HISTORY_FILE, history_output)
+    save_json(HISTORY_FILE, {"updatedAt": checked_at, "days": days})
 
-    print(f"Date: {today}")
-    print(f"Mission rows: {len(missions)}")
+    print(f"Date: {today}\nMission rows: {len(missions)}")
     for item in missions:
-        print(f"{item.get('mission')} | {item.get('zone')} | "
-              f"{item.get('location') or 'Location unavailable'} | "
-              f"{item.get('vbucks')} V-Bucks | PL {item.get('powerLevel', 'Unknown')}")
-    for source in source_results:
+        print(f"{item['mission']} | {item['zone']} | {item.get('location') or 'Zone unavailable'} | "
+              f"{item['vbucks']} V-Bucks | PL {item.get('powerLevel', 'Unknown')}")
+    for source in sources:
         print(f"{source['name']}: {source.get('status', 'No status')} | "
               f"Locations: {source.get('locationCount', 0)}")
-
-    # Data files have already been updated, so the website can show the
-    # unavailable/partial state instead of continuing to show stale missions.
-    if not any(source.get("ok") for source in source_results):
+    if not any(s.get("ok") for s in sources):
         sys.exit("Both mission sources failed. Today's board was cleared; history was preserved.")
 
 
