@@ -36,9 +36,9 @@ function missionImage(name) {
 
   if (n.includes("fight category 2 storm"))
     return "assets/missions/fight-category-2-storm.png";
-  
+
   if (n.includes("fight category 4 storm"))
-  return "assets/missions/fight-the-storm-four-atlas.png";
+    return "assets/missions/fight-the-storm-four-atlas.png";
 
   if (
     n.includes("fight category 3 storm") ||
@@ -102,7 +102,6 @@ function renderMissions() {
       img.className="mission-icon-image";
       img.src=imagePath;
       img.alt="";
-      // Explicit sizing prevents the PNG's intrinsic dimensions overflowing the card.
       img.style.width="100%";
       img.style.height="100%";
       img.style.maxWidth="100%";
@@ -117,14 +116,27 @@ function renderMissions() {
 
     const title=document.createElement("h3"); title.textContent=m.mission || "Mission alert";
     titleRow.append(icon,title);
-    const sub=document.createElement("p"); sub.className="mission-sub"; sub.textContent=`${m.zone||"Unknown zone"}${m.location?" · "+m.location:""}`;
+
+    // Region (area) is red; the specific in-game zone is green.
+    const sub=document.createElement("div"); sub.className="mission-meta";
+    const region=document.createElement("span");
+    region.className="mission-region";
+    region.textContent=m.zone || "Unknown region";
+    sub.append(region);
+    if (m.location) {
+      const tile=document.createElement("span");
+      tile.className="mission-zone";
+      tile.textContent=m.location;
+      sub.append(tile);
+    }
+
     left.append(titleRow,sub);
     const reward=document.createElement("div"); reward.className="reward"; reward.textContent=`Ⓥ ${fmt(m.vbucks)}`;
     h.append(left,reward); c.append(h);
     const pl=Number(m.powerLevel);
     if(Number.isInteger(pl) && pl>=2 && pl<=160) {
       const tags=document.createElement("div"); tags.className="tags";
-      const tag=document.createElement("span"); tag.className="tag"; tag.textContent=`PL ${pl}`;
+      const tag=document.createElement("span"); tag.className="tag power-level"; tag.textContent=`⚡ ${pl}`;
       tags.append(tag); c.append(tags);
     }
     box.append(c);
