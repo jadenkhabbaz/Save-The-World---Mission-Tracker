@@ -300,3 +300,60 @@ header nav { flex:0 0 auto; }
   .hero-actions > .cta,.hero-actions > .see-bot-trigger { width:100%;min-width:0 !important;height:58px !important;min-height:58px !important; }
   .mission-meta { margin-left:0 !important; }
 }
+
+/* See-Bot modal: consistent, centered action buttons */
+.see-bot-actions {
+  display:flex !important;
+  align-items:stretch !important;
+  justify-content:flex-end !important;
+  gap:12px !important;
+  flex-wrap:nowrap !important;
+  margin-top:20px !important;
+}
+.see-bot-actions > button {
+  box-sizing:border-box !important;
+  height:48px !important;
+  min-height:48px !important;
+  margin:0 !important;
+  padding:0 18px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:10px !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+  border-radius:9px !important;
+  flex:0 0 auto !important;
+}
+.see-bot-actions .copy-daily {
+  min-width:148px !important;
+  font:700 15px "Teko",sans-serif !important;
+  letter-spacing:.07em !important;
+}
+.see-bot-actions #seeBotDone {
+  min-width:190px !important;
+  font:700 15px var(--font-display) !important;
+  letter-spacing:.015em !important;
+}
+.thankyou-bot {
+  display:block !important;
+  width:23px !important;
+  height:23px !important;
+  flex:0 0 23px !important;
+  color:#03131c !important;
+}
+.see-bot-actions #seeBotDone:hover .thankyou-bot {
+  transform:translateY(-1px) scale(1.08);
+  transition:transform .18s ease;
+}
+@media(max-width:560px) {
+  .see-bot-panel { padding:22px 17px !important; }
+  .see-bot-actions {
+    flex-direction:column !important;
+    align-items:stretch !important;
+  }
+  .see-bot-actions > button {
+    width:100% !important;
+    min-width:0 !important;
+  }
+}
