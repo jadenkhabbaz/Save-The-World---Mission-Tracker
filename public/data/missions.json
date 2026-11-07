@@ -1,8 +1,32 @@
 {
-  "updatedAt": "2026-11-06T23:32:22Z",
+  "updatedAt": "2026-11-07T03:15:11Z",
   "confirmed": true,
   "status": "confirmed",
   "today": [
+    {
+      "mission": "Fight Category 3 Storm",
+      "zone": "Canny Valley",
+      "location": "",
+      "vbucks": 50,
+      "source": "PennyDB",
+      "sources": [
+        "PennyDB"
+      ],
+      "powerLevel": 52
+    },
+    {
+      "mission": "Fight Category 4 Storm",
+      "zone": "Twine Peaks",
+      "location": "",
+      "vbucks": 50,
+      "source": "PennyDB",
+      "sources": [
+        "PennyDB"
+      ],
+      "powerLevel": 94
+    }
+  ],
+  "yesterday": [
     {
       "mission": "Fight the Storm",
       "zone": "Canny Valley",
@@ -26,7 +50,6 @@
       "powerLevel": 70
     }
   ],
-  "yesterday": [],
   "sources": [
     {
       "name": "PennyDB",
@@ -35,7 +58,7 @@
       "missionCount": 2,
       "powerLevelCount": 2,
       "locationCount": 0,
-      "checkedAt": "2026-11-06T23:32:22Z",
+      "checkedAt": "2026-11-07T03:15:11Z",
       "status": "Fetched structured mission data"
     },
     {
@@ -45,10 +68,10 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-06T23:32:22Z",
+      "checkedAt": "2026-11-07T03:15:11Z",
       "status": "Page fetched, but mission cards were not parsed"
     }
   ],
-  "historyDays": 11,
+  "historyDays": 12,
   "historyAvailable": true
 }

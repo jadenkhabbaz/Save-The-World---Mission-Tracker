@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-06T23:32:22Z",
+  "updatedAt": "2026-11-07T03:15:11Z",
   "days": [
     {
       "date": "2026-10-27",
@@ -532,6 +532,57 @@
           "powerLevelCount": 0,
           "locationCount": 0,
           "checkedAt": "2026-11-06T23:32:22Z",
+          "status": "Page fetched, but mission cards were not parsed"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-07",
+      "checkedAt": "2026-11-07T03:15:11Z",
+      "confirmed": true,
+      "missions": [
+        {
+          "mission": "Fight Category 3 Storm",
+          "zone": "Canny Valley",
+          "location": "",
+          "vbucks": 50,
+          "source": "PennyDB",
+          "sources": [
+            "PennyDB"
+          ],
+          "powerLevel": 52
+        },
+        {
+          "mission": "Fight Category 4 Storm",
+          "zone": "Twine Peaks",
+          "location": "",
+          "vbucks": 50,
+          "source": "PennyDB",
+          "sources": [
+            "PennyDB"
+          ],
+          "powerLevel": 94
+        }
+      ],
+      "sourceSummaries": [
+        {
+          "name": "PennyDB",
+          "url": "https://pennydb.net/api",
+          "ok": true,
+          "missionCount": 2,
+          "powerLevelCount": 2,
+          "locationCount": 0,
+          "checkedAt": "2026-11-07T03:15:11Z",
+          "status": "Fetched structured mission data"
+        },
+        {
+          "name": "HawkBucks",
+          "url": "https://hawkbucks.com/en",
+          "ok": true,
+          "missionCount": 0,
+          "powerLevelCount": 0,
+          "locationCount": 0,
+          "checkedAt": "2026-11-07T03:15:11Z",
           "status": "Page fetched, but mission cards were not parsed"
         }
       ]
