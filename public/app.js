@@ -70,6 +70,7 @@ function renderMissions() {
     const left=document.createElement("div"); left.className="mission-info";
     const titleRow=document.createElement("div"); titleRow.className="mission-title-row";
 
+    // Keep the existing per-mission image mapping and image files.
     const icon=document.createElement("span");
     icon.className="mission-icon";
     icon.setAttribute("aria-hidden","true");
@@ -91,16 +92,19 @@ function renderMissions() {
       icon.textContent=missionIcon(m.mission);
     }
 
-    const title=document.createElement("h3"); title.textContent=m.mission || "Mission alert";
+    const title=document.createElement("h3");
+    title.textContent=m.mission || "Mission alert";
     titleRow.append(icon,title);
 
-    // Region name (Canny Valley, Twine Peaks, etc.) in red.
-    // Specific mission zone (Desert, Industrial Park, etc.) in green.
-    const meta=document.createElement("div"); meta.className="mission-meta";
+    // Red = region, green = in-game zone, large yellow block = power level.
+    const meta=document.createElement("div");
+    meta.className="mission-meta";
+
     const region=document.createElement("span");
     region.className="mission-region";
     region.textContent=m.zone || "Unknown region";
     meta.append(region);
+
     if (m.location) {
       const missionZone=document.createElement("span");
       missionZone.className="mission-zone";
@@ -108,21 +112,34 @@ function renderMissions() {
       meta.append(missionZone);
     }
 
+    const pl=Number(m.powerLevel);
+    if(Number.isInteger(pl) && pl>=2 && pl<=160) {
+      const power=document.createElement("span");
+      power.className="mission-power";
+      power.setAttribute("aria-label",`Power level ${pl}`);
+      const number=document.createElement("strong");
+      number.className="mission-power-number";
+      number.textContent=pl;
+      const detail=document.createElement("span");
+      detail.className="mission-power-detail";
+      const bolt=document.createElement("span");
+      bolt.className="mission-power-bolt";
+      bolt.textContent="ϟ";
+      const label=document.createElement("span");
+      label.className="mission-power-label";
+      label.textContent="POWER";
+      detail.append(bolt,label);
+      power.append(number,detail);
+      meta.append(power);
+    }
+
     left.append(titleRow,meta);
+
     const reward=document.createElement("div");
     reward.className="reward";
     reward.textContent=`Ⓥ ${fmt(m.vbucks)}`;
     h.append(left,reward);
     c.append(h);
-
-    const pl=Number(m.powerLevel);
-    if(Number.isInteger(pl) && pl>=2 && pl<=160) {
-      const tags=document.createElement("div"); tags.className="tags";
-      const tag=document.createElement("span");
-      tag.className="tag power-level";
-      tag.textContent=`⚡ ${pl}`;
-      tags.append(tag); c.append(tags);
-    }
     box.append(c);
   });
 }
