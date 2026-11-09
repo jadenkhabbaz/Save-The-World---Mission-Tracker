@@ -1,34 +1,9 @@
 {
-  "updatedAt": "2026-11-08T21:05:47Z",
+  "updatedAt": "2026-11-09T00:47:59Z",
   "confirmed": false,
   "status": "partial",
   "today": [],
-  "yesterday": [
-    {
-      "mission": "Fight Category 3 Storm",
-      "zone": "Canny Valley",
-      "location": "Desert",
-      "vbucks": 50,
-      "source": "PennyDB",
-      "sources": [
-        "PennyDB",
-        "HawkBucks"
-      ],
-      "powerLevel": 52
-    },
-    {
-      "mission": "Fight Category 4 Storm",
-      "zone": "Twine Peaks",
-      "location": "Industrial Park",
-      "vbucks": 50,
-      "source": "PennyDB",
-      "sources": [
-        "PennyDB",
-        "HawkBucks"
-      ],
-      "powerLevel": 94
-    }
-  ],
+  "yesterday": [],
   "sources": [
     {
       "name": "PennyDB",
@@ -37,7 +12,7 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-08T21:05:47Z",
+      "checkedAt": "2026-11-09T00:47:59Z",
       "status": "Fetched structured mission data"
     },
     {
@@ -47,10 +22,10 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-08T21:05:47Z",
+      "checkedAt": "2026-11-09T00:47:59Z",
       "status": "Page fetched, but no mission rows were found in queryState or visible page text"
     }
   ],
-  "historyDays": 13,
+  "historyDays": 14,
   "historyAvailable": true
 }
