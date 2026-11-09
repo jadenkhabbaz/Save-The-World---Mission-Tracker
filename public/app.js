@@ -122,7 +122,7 @@ function dailyReport() {
     return "SEE-BOT DAILY REPORT\nNo verified V-Bucks mission rows are currently available. Check the tracker again after the next source update.";
   }
   const rows = missions.map((m, i) => `${i + 1}. ${missionDetails(m)}`);
-  return `SEE-BOT DAILY REPORT\n${missions.length} verified mission${missions.length === 1 ? "" : "s"} • ${fmt(total)} V-Bucks total\n\n${rows.join("\n")}\n\nConfirm mission details in-game before launching.`;
+  return `SEE-BOT DAILY REPORT\n${missions.length} verified mission${missions.length === 1 ? "" : "s"} • ${fmt(total)} V-Bucks total\n\n${rows.join("\n")}\n\nConfirm mission details in-game before launching:)`;
 }
 
 function openSeeBot() {
