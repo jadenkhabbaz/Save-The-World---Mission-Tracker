@@ -171,7 +171,7 @@ function renderMissions() {
     const title = document.createElement("b");
     title.textContent = "NO MISSIONS FOUND";
     const note = document.createElement("span");
-    note.textContent = list.length ? "Try another zone or search term." : "No verified mission rows are available right now. Check back after the next automatic update.";
+    note.textContent = list.length ? "Try another zone or search term." : "No missions available right now.";
     empty.append(title, note);
     box.append(empty);
     return;
