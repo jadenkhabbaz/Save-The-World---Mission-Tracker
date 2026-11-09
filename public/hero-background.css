@@ -6,7 +6,7 @@
   background: #071321 !important;
 }
 
-/* Full-bleed background artwork with a left-side readability fade. */
+/* Full hero artwork with softer edges and a dark text-safe left side. */
 .hero::before {
   content: "";
   position: absolute;
@@ -14,38 +14,45 @@
   inset: 0;
   pointer-events: none;
   background-image:
+    /* Text readability + gradual transition into the scene */
     linear-gradient(
       90deg,
       rgba(5, 13, 25, 0.99) 0%,
-      rgba(5, 13, 25, 0.96) 25%,
-      rgba(5, 13, 25, 0.82) 39%,
-      rgba(5, 13, 25, 0.42) 53%,
-      rgba(5, 13, 25, 0.08) 70%,
-      rgba(5, 13, 25, 0.02) 100%
+      rgba(5, 13, 25, 0.96) 22%,
+      rgba(5, 13, 25, 0.86) 36%,
+      rgba(5, 13, 25, 0.55) 48%,
+      rgba(5, 13, 25, 0.16) 65%,
+      rgba(5, 13, 25, 0.04) 82%,
+      rgba(5, 13, 25, 0.22) 100%
     ),
+    /* Soft top and bottom blending */
     linear-gradient(
-      0deg,
-      rgba(5, 13, 25, 0.78) 0%,
-      rgba(5, 13, 25, 0.10) 24%,
+      180deg,
+      rgba(5, 13, 25, 0.38) 0%,
+      rgba(5, 13, 25, 0.02) 18%,
       rgba(5, 13, 25, 0.02) 76%,
-      rgba(5, 13, 25, 0.32) 100%
+      rgba(5, 13, 25, 0.78) 100%
+    ),
+    /* Gentle edge vignette to avoid hard side edges */
+    linear-gradient(
+      90deg,
+      rgba(5, 13, 25, 0.52) 0%,
+      transparent 9%,
+      transparent 91%,
+      rgba(5, 13, 25, 0.38) 100%
     ),
     url("see-bot-vbucks-background.png");
-  background-position: center, center, center right;
-  background-size: cover, cover, cover;
+  background-position: center, center, center, center center;
+  background-size: cover, cover, cover, cover;
   background-repeat: no-repeat;
 }
 
-/* Keep the original copy above the background. */
 .hero-copy {
   position: relative !important;
   z-index: 2 !important;
 }
 
-/*
-  The coin area becomes a transparent overlay. Its existing .coin-aura,
-  .coin-ring, V-Bucks image, and caption remain visible and animated.
-*/
+/* Transparent coin layer: keep the original orb and its animation. */
 .hero-coin {
   position: relative !important;
   z-index: 1 !important;
@@ -54,33 +61,28 @@
   place-items: center !important;
   min-height: 300px !important;
   width: 100% !important;
-  aspect-ratio: auto !important;
   overflow: visible !important;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
+
+  /* Shift the coin left of the llama instead of placing it over the llama. */
+  transform: translateX(-28%) !important;
 }
 
-/* Preserve and center the existing artificial cyan glow and orbit. */
+/* Preserve the original cyan glow. */
 .hero-coin .coin-aura {
   display: block !important;
+  position: absolute !important;
   z-index: 0 !important;
+  width: 230px !important;
+  height: 230px !important;
 }
 
+/* Preserve the original rotating dashed ring, scaled down proportionally. */
 .hero-coin .coin-ring {
   display: block !important;
+  position: absolute !important;
   z-index: 1 !important;
-}
-
-/* Keep the V-Bucks logo in front of the cyan effects. */
-.hero-coin > img {
-  position: relative !important;
-  z-index: 2 !important;
-  display: block;
-  width: min(270px, 65%) !important;
-  max-width: 270px !important;
-  height: auto !important;
-  object-fit: contain;
-  filter: drop-shadow(0 12px 36px rgba(0, 234, 255, 0.35)) !important;
-}
+  width: 245px !important;
