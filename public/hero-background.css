@@ -1,0 +1,61 @@
+/*
+  JadBakerX hero artwork layer
+  Upload the supplied Fortnite background as:
+  public/see-bot-vbucks-background.png
+
+  This file is loaded after fortnite-ui.css so it only overrides the hero coin
+  artwork. It does not change the mission board, See-Bot modal, or other UI.
+*/
+
+.hero-coin {
+  position: relative !important;
+  isolation: isolate !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 300px !important;
+  overflow: hidden;
+  background-image: url("see-bot-vbucks-background.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* Remove the old artificial cyan orb and dashed orbit. */
+.hero-coin .coin-aura,
+.hero-coin .coin-ring {
+  display: none !important;
+}
+
+/* Keep the existing V-Bucks logo centered over the orb in the new artwork. */
+.hero-coin > img {
+  position: relative !important;
+  z-index: 2 !important;
+  display: block;
+  width: min(170px, 43%) !important;
+  max-width: 43% !important;
+  height: auto !important;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 22px rgba(0, 234, 255, .42)) !important;
+}
+
+/* Keep the small caption above the background image. */
+.hero-coin > span {
+  position: absolute !important;
+  z-index: 3 !important;
+  right: 8% !important;
+  bottom: 4px !important;
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  .hero-coin {
+    min-height: 210px !important;
+    background-size: contain;
+  }
+
+  .hero-coin > img {
+    width: min(132px, 39%) !important;
+    max-width: 39% !important;
+  }
+}
