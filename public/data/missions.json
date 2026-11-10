@@ -1,31 +1,68 @@
 {
-  "updatedAt": "2026-11-09T23:36:48Z",
-  "confirmed": false,
-  "status": "partial",
-  "today": [],
+  "updatedAt": "2026-11-10T04:04:43Z",
+  "confirmed": true,
+  "status": "confirmed",
+  "today": [
+    {
+      "mission": "Retrieve the Data",
+      "zone": "Plankerton",
+      "location": "Forest",
+      "vbucks": 50,
+      "source": "PennyDB",
+      "sources": [
+        "PennyDB",
+        "HawkBucks"
+      ],
+      "powerLevel": 34
+    },
+    {
+      "mission": "Fight Category 2 Storm",
+      "zone": "Canny Valley",
+      "location": "Desert",
+      "vbucks": 50,
+      "source": "PennyDB",
+      "sources": [
+        "PennyDB",
+        "HawkBucks"
+      ],
+      "powerLevel": 46
+    },
+    {
+      "mission": "Fight Category 3 Storm",
+      "zone": "Twine Peaks",
+      "location": "Industrial Park",
+      "vbucks": 50,
+      "source": "PennyDB",
+      "sources": [
+        "PennyDB",
+        "HawkBucks"
+      ],
+      "powerLevel": 94
+    }
+  ],
   "yesterday": [],
   "sources": [
     {
       "name": "PennyDB",
       "url": "https://pennydb.net/api",
       "ok": true,
-      "missionCount": 0,
-      "powerLevelCount": 0,
+      "missionCount": 3,
+      "powerLevelCount": 3,
       "locationCount": 0,
-      "checkedAt": "2026-11-09T23:36:48Z",
+      "checkedAt": "2026-11-10T04:04:43Z",
       "status": "Fetched structured mission data"
     },
     {
       "name": "HawkBucks",
       "url": "https://hawkbucks.com/en",
       "ok": true,
-      "missionCount": 0,
-      "powerLevelCount": 0,
-      "locationCount": 0,
-      "checkedAt": "2026-11-09T23:36:48Z",
-      "status": "Page fetched, but no mission rows were found in queryState or visible page text"
+      "missionCount": 3,
+      "powerLevelCount": 3,
+      "locationCount": 3,
+      "checkedAt": "2026-11-10T04:04:43Z",
+      "status": "Parsed mission rows from embedded queryState"
     }
   ],
-  "historyDays": 14,
+  "historyDays": 15,
   "historyAvailable": true
 }
