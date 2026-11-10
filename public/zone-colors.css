@@ -1,0 +1,33 @@
+/*
+ * Save the World zone badge colors.
+ * Only badge colors change. Existing dimensions, radius, border width,
+ * card frame, spacing, and layout remain controlled by the current CSS.
+ */
+
+/* Stonewood — bright green */
+.mission-region.zone-stonewood {
+  color: #baffd0 !important;
+  background: #087a3d !important;
+  border-color: #20e878 !important;
+}
+
+/* Plankerton — dark navy blue */
+.mission-region.zone-plankerton {
+  color: #c8d9ff !important;
+  background: #142b59 !important;
+  border-color: #315ca8 !important;
+}
+
+/* Canny Valley — retain the existing red appearance */
+.mission-region.zone-canny {
+  color: #ff8c9c !important;
+  background: #401f2b !important;
+  border-color: #b74359 !important;
+}
+
+/* Twine Peaks — purple */
+.mission-region.zone-twine {
+  color: #edccff !important;
+  background: #48206f !important;
+  border-color: #a45bd8 !important;
+}
