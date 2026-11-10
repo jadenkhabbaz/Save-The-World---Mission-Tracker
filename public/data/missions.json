@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-10T15:07:15Z",
+  "updatedAt": "2026-11-10T15:37:16Z",
   "confirmed": true,
   "status": "confirmed",
   "today": [
@@ -49,7 +49,7 @@
       "missionCount": 3,
       "powerLevelCount": 3,
       "locationCount": 0,
-      "checkedAt": "2026-11-10T15:07:15Z",
+      "checkedAt": "2026-11-10T15:37:16Z",
       "status": "Fetched structured mission data"
     },
     {
@@ -59,7 +59,7 @@
       "missionCount": 3,
       "powerLevelCount": 3,
       "locationCount": 3,
-      "checkedAt": "2026-11-10T15:07:15Z",
+      "checkedAt": "2026-11-10T15:37:16Z",
       "status": "Parsed mission rows from embedded queryState"
     }
   ],
