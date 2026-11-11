@@ -27,3 +27,29 @@
 }
 .stw-guide>.guide-kicker{color:var(--cyan,#62f2ee) !important}
 .stw-guide .guide-number{color:var(--cyan,#65e8e3) !important}
+
+
+/* Visual refresh — cinematic guide artwork and a more character-led hero */
+.hero-coin{min-height:350px!important;isolation:isolate}
+.hero-coin .hero-see-bot{position:absolute!important;z-index:3!important;width:min(310px,70%)!important;max-height:330px;object-fit:contain;right:12%;bottom:5px;filter:drop-shadow(0 18px 32px rgba(0,234,255,.28))!important;animation:guideBotFloat 5s ease-in-out infinite}
+.hero-coin .hero-vbucks{position:absolute!important;z-index:4!important;width:76px!important;height:76px;object-fit:contain;right:8%;top:12%;filter:drop-shadow(0 0 22px rgba(0,234,255,.48))!important;animation:guideCoinFloat 4s ease-in-out infinite}
+.hero-intel-tag{position:absolute;z-index:5;right:0;bottom:4px;padding:8px 13px;border:1px solid rgba(98,242,238,.34);border-radius:999px;background:rgba(5,16,30,.84);color:#8df9f2!important;font:700 12px "Teko",sans-serif!important;letter-spacing:.14em;backdrop-filter:blur(10px)}
+@keyframes guideBotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes guideCoinFloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-7px) rotate(5deg)}}
+.guide-grid{gap:15px;margin-top:27px}
+.guide-card{position:relative;overflow:hidden;padding:0 19px 20px;isolation:isolate;transition:transform .24s ease,border-color .24s ease,box-shadow .24s ease}
+.guide-card:hover{transform:translateY(-5px);border-color:rgba(98,242,238,.48);box-shadow:0 18px 38px rgba(0,0,0,.28),0 0 26px rgba(48,205,210,.08)}
+.guide-art{position:relative;height:150px;margin:0 -19px 17px;overflow:hidden;background:#10263d}
+.guide-art:after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(180deg,transparent,rgba(7,17,31,.72))}
+.guide-art svg{display:block;width:100%;height:100%;transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+.guide-card:hover .guide-art svg{transform:scale(1.055)}
+.guide-number{display:inline-flex;align-items:center;gap:8px}
+.guide-number:before{content:"";width:17px;height:2px;background:var(--cyan,#62f2ee);box-shadow:0 0 9px var(--cyan,#62f2ee)}
+.guide-card h3{font-size:20px}
+.guide-card p{font-size:14px;line-height:1.65}
+.guide-card-wide .guide-art{height:165px}
+.guide-card-wide p{max-width:850px}
+.guide-footer-note{border:1px solid rgba(98,242,238,.18);border-left:3px solid #62f2ee;background:linear-gradient(100deg,rgba(16,54,66,.48),rgba(11,27,44,.45))}
+@media(max-width:760px){.hero-coin{min-height:275px!important}.hero-coin .hero-see-bot{width:min(245px,68%)!important;right:15%;bottom:5px}.hero-coin .hero-vbucks{width:61px!important;height:61px;right:8%;top:9%}.guide-art{height:135px}.guide-card-wide .guide-art{height:145px}}
+@media(max-width:480px){.hero-coin{min-height:240px!important}.hero-coin .hero-see-bot{width:205px!important;right:17%}.hero-coin .hero-vbucks{width:52px!important;height:52px}.hero-intel-tag{font-size:10px!important;right:0}.guide-card{padding-left:15px;padding-right:15px}.guide-art{margin-left:-15px;margin-right:-15px}}
+@media(prefers-reduced-motion:reduce){.hero-coin .hero-see-bot,.hero-coin .hero-vbucks{animation:none}.guide-card,.guide-art svg{transition:none}}
