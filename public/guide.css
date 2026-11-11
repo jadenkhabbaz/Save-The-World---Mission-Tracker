@@ -14,3 +14,16 @@
 .guide-footer-note strong{display:block;margin-bottom:4px;color:#dffdfb;font-size:13px}
 .guide-legal{margin:15px 0 0;color:#8299ac;font-size:10px;line-height:1.6}
 @media(max-width:600px){.stw-guide{margin:28px 0 36px;padding:19px 15px;border-radius:18px}.guide-grid{grid-template-columns:1fr;gap:9px}.guide-card-wide{grid-column:auto}.guide-card{padding:16px}.guide-card h3{font-size:17px}}
+
+/* Match guide labels to the main dashboard section labels */
+.stw-guide>.guide-kicker,
+.stw-guide .guide-number{
+  font-family:"Teko",sans-serif !important;
+  font-size:15px !important;
+  font-weight:700 !important;
+  letter-spacing:.16em !important;
+  line-height:1.1 !important;
+  text-transform:uppercase;
+}
+.stw-guide>.guide-kicker{color:var(--cyan,#62f2ee) !important}
+.stw-guide .guide-number{color:var(--cyan,#65e8e3) !important}
