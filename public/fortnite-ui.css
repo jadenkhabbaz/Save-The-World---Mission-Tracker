@@ -470,3 +470,29 @@ header nav { flex:0 0 auto; }
   #seeBotModal .see-bot-screen { margin-top:16px !important; }
 }
 
+/* See-Bot artwork alignment: center the visible character, not just the img box */
+#seeBotModal .see-bot-avatar {
+  position:relative !important;
+  display:block !important;
+  overflow:hidden !important;
+}
+#seeBotModal .see-bot-avatar > img {
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  display:block !important;
+  width:142px !important;
+  height:142px !important;
+  max-width:none !important;
+  object-fit:contain !important;
+  object-position:center center !important;
+  transform:translate(calc(-50% + 9px), calc(-50% + 2px)) scale(1.06) !important;
+}
+@media(max-width:560px) {
+  #seeBotModal .see-bot-avatar > img {
+    width:108px !important;
+    height:108px !important;
+    transform:translate(calc(-50% + 7px), calc(-50% + 1px)) scale(1.06) !important;
+  }
+}
+
