@@ -359,25 +359,27 @@ header nav { flex:0 0 auto; }
 }
 
 
-/* See-Bot character portrait with cyan holographic backlight */
-.see-bot-heading { gap:14px !important; min-height:104px; }
+/* See-Bot circular character portrait with cyan holographic backlight */
+.see-bot-heading { gap:18px !important; min-height:140px; }
 .see-bot-avatar {
-  width:104px !important;height:104px !important;flex:0 0 104px !important;
+  width:136px !important;height:136px !important;flex:0 0 136px !important;
   display:flex !important;align-items:center !important;justify-content:center !important;
-  position:relative !important;overflow:visible !important;border:0 !important;
-  border-radius:0 !important;background:transparent !important;box-shadow:none !important;
+  position:relative !important;overflow:hidden !important;
+  border:2px solid #00eaff !important;border-radius:50% !important;
+  background:radial-gradient(circle at 50% 45%,rgba(0,190,255,.30) 0%,rgba(0,105,220,.18) 48%,rgba(4,16,38,.96) 76%) !important;
+  box-shadow:0 0 12px rgba(0,220,255,.75),0 0 30px rgba(0,115,255,.42),inset 0 0 18px rgba(0,190,255,.24) !important;
 }
 .see-bot-avatar > img {
-  display:block;width:132px;height:132px;max-width:none;object-fit:contain;
-  transform:translate(-5px,-5px);
-  filter:drop-shadow(0 0 10px rgba(0,190,255,.9)) drop-shadow(0 0 23px rgba(0,110,255,.65));
+  display:block;width:164px;height:164px;max-width:none;object-fit:contain;
+  transform:translateY(3px) scale(1.08);
+  filter:drop-shadow(0 0 8px rgba(0,205,255,.95)) drop-shadow(0 0 17px rgba(0,110,255,.75));
 }
 .see-bot-avatar i {
-  right:4px !important;bottom:8px !important;z-index:2;
+  right:5px !important;bottom:7px !important;z-index:2;
 }
 @media(max-width:560px) {
-  .see-bot-heading { gap:8px !important;min-height:82px; }
-  .see-bot-avatar { width:78px !important;height:82px !important;flex-basis:78px !important; }
-  .see-bot-avatar > img { width:104px;height:104px;transform:translate(-4px,-3px); }
-  .see-bot-avatar i { right:0 !important;bottom:5px !important; }
+  .see-bot-heading { gap:10px !important;min-height:108px; }
+  .see-bot-avatar { width:104px !important;height:104px !important;flex-basis:104px !important; }
+  .see-bot-avatar > img { width:128px;height:128px;transform:translateY(3px) scale(1.08); }
+  .see-bot-avatar i { right:2px !important;bottom:4px !important; }
 }
