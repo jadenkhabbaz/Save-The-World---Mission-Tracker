@@ -5,7 +5,7 @@ let audioContext = null;
 let toastTimer = null;
 
 const seeBotAudio = new Audio("assets/missions/quiet-please-i-am-seeing-searching-for-v-bucks-missions.mp3");
-const thankYouAudio = new Audio("assets/missions/what-has-been-seen-cannot-be-unseen.mp3");
+const thankYouAudio = new Audio("assets/missions/[(Fortnite Save The World) Ray]Thank......-bot_.mp3");
 seeBotAudio.preload = "auto";
 thankYouAudio.preload = "auto";
 
