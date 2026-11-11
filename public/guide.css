@@ -27,3 +27,34 @@
 }
 .stw-guide>.guide-kicker{color:var(--cyan,#62f2ee) !important}
 .stw-guide .guide-number{color:var(--cyan,#65e8e3) !important}
+
+
+/* Match the Field Guide typography to the main Fortnite dashboard */
+.stw-guide{
+  font-family:"Rajdhani",sans-serif;
+}
+.stw-guide>.guide-kicker,
+.stw-guide .guide-number{
+  font-family:"Teko",sans-serif !important;
+}
+.stw-guide>h2,
+.stw-guide .guide-card h3,
+.stw-guide .guide-lead,
+.stw-guide .guide-card p,
+.stw-guide .guide-footer-note,
+.stw-guide .guide-legal{
+  font-family:"Rajdhani",sans-serif !important;
+}
+.stw-guide>h2{
+  font-weight:700;
+  letter-spacing:.01em;
+}
+.stw-guide .guide-card h3{
+  font-weight:700;
+  letter-spacing:0;
+}
+.stw-guide .guide-lead,
+.stw-guide .guide-card p,
+.stw-guide .guide-footer-note{
+  font-weight:600;
+}
