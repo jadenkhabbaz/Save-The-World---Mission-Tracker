@@ -4,6 +4,11 @@ let soundEnabled = true;
 let audioContext = null;
 let toastTimer = null;
 
+const seeBotAudio = new Audio("assets/missions/quiet-please-i-am-seeing-searching-for-v-bucks-missions.mp3");
+const thankYouAudio = new Audio("assets/missions/what-has-been-seen-cannot-be-unseen.mp3");
+seeBotAudio.preload = "auto";
+thankYouAudio.preload = "auto";
+
 const fmt = n => Number(n || 0).toLocaleString();
 const safe = value => String(value ?? "").trim();
 
@@ -40,6 +45,12 @@ function missionImage(name) {
 
 function playSfx(kind = "click") {
   if (!soundEnabled) return;
+  if (kind === "seeBot" || kind === "thankYou") {
+    const audio = kind === "seeBot" ? seeBotAudio : thankYouAudio;
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+    return;
+  }
   try {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return;
@@ -130,15 +141,15 @@ function openSeeBot() {
   $("seeBotModal").classList.add("open");
   $("seeBotModal").setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
-  playSfx("open");
+  playSfx("seeBot");
   $("seeBotClose").focus();
 }
 
-function closeSeeBot() {
+function closeSeeBot(sound = "click") {
   $("seeBotModal").classList.remove("open");
   $("seeBotModal").setAttribute("aria-hidden", "true");
   document.body.classList.remove("modal-open");
-  playSfx("click");
+  playSfx(sound);
   $("seeBotOpen").focus();
 }
 
@@ -298,7 +309,7 @@ $("refresh").addEventListener("click", () => { playSfx("click"); load(); });
 $("year").textContent = new Date().getFullYear();
 $("seeBotOpen").addEventListener("click", openSeeBot);
 $("seeBotClose").addEventListener("click", closeSeeBot);
-$("seeBotDone").addEventListener("click", closeSeeBot);
+$("seeBotDone").addEventListener("click", () => closeSeeBot("thankYou"));
 document.querySelector("[data-close-see-bot]").addEventListener("click", closeSeeBot);
 $("seeBotCopy").addEventListener("click", () => copyText(dailyReport(), "See-Bot report copied."));
 $("copyDaily").addEventListener("click", () => copyText(dailyReport(), "Daily mission summary copied."));
