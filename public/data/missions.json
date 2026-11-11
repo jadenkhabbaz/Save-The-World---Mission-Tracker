@@ -1,8 +1,22 @@
 {
-  "updatedAt": "2026-11-10T23:37:15Z",
+  "updatedAt": "2026-11-11T00:07:16Z",
   "confirmed": true,
   "status": "confirmed",
   "today": [
+    {
+      "mission": "Repair The Shelter",
+      "zone": "Canny Valley",
+      "location": "Desert",
+      "vbucks": 50,
+      "source": "PennyDB",
+      "sources": [
+        "PennyDB",
+        "HawkBucks"
+      ],
+      "powerLevel": 52
+    }
+  ],
+  "yesterday": [
     {
       "mission": "Retrieve the Data",
       "zone": "Plankerton",
@@ -40,29 +54,28 @@
       "powerLevel": 94
     }
   ],
-  "yesterday": [],
   "sources": [
     {
       "name": "PennyDB",
       "url": "https://pennydb.net/api",
       "ok": true,
-      "missionCount": 3,
-      "powerLevelCount": 3,
+      "missionCount": 1,
+      "powerLevelCount": 1,
       "locationCount": 0,
-      "checkedAt": "2026-11-10T23:37:15Z",
+      "checkedAt": "2026-11-11T00:07:16Z",
       "status": "Fetched structured mission data"
     },
     {
       "name": "HawkBucks",
       "url": "https://hawkbucks.com/en",
       "ok": true,
-      "missionCount": 3,
-      "powerLevelCount": 3,
-      "locationCount": 3,
-      "checkedAt": "2026-11-10T23:37:15Z",
+      "missionCount": 1,
+      "powerLevelCount": 1,
+      "locationCount": 1,
+      "checkedAt": "2026-11-11T00:07:16Z",
       "status": "Parsed mission rows from embedded queryState"
     }
   ],
-  "historyDays": 15,
+  "historyDays": 16,
   "historyAvailable": true
 }
