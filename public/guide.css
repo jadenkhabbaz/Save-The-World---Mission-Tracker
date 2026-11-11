@@ -58,3 +58,23 @@
 .stw-guide .guide-footer-note{
   font-weight:600;
 }
+
+
+/* Use the exact Fortnite UI font tokens from fortnite-ui.css */
+.stw-guide,
+.stw-guide .guide-lead,
+.stw-guide .guide-card p,
+.stw-guide .guide-footer-note,
+.stw-guide .guide-legal{
+  font-family:var(--font-body,"Rajdhani","Segoe UI",sans-serif) !important;
+}
+.stw-guide>h2,
+.stw-guide .guide-card h3{
+  font-family:var(--font-display,"Luckiest Guy",Impact,sans-serif) !important;
+  font-weight:400 !important;
+  letter-spacing:.01em !important;
+}
+.stw-guide>.guide-kicker,
+.stw-guide .guide-number{
+  font-family:"Teko",sans-serif !important;
+}
