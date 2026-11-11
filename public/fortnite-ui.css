@@ -496,3 +496,10 @@ header nav { flex:0 0 auto; }
   }
 }
 
+
+
+/* Separate background-music control; independent from sound effects. */
+.music-toggle { border-color:rgba(0,234,255,.35); }
+.music-toggle[aria-pressed="false"] { color:#8294a9; border-color:#31445c; }
+.music-toggle[aria-pressed="true"] { color:#72efff; }
+@media(max-width:760px) { nav .sound-toggle { padding:7px 8px; } }
