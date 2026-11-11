@@ -1,11 +1,17 @@
 const $ = id => document.getElementById(id);
 let data = {today:[], confirmed:false, sources:[], status:"unavailable"};
 let soundEnabled = true;
+let musicEnabled = true;
+let musicStarted = false;
 let audioContext = null;
 let toastTimer = null;
 
 const seeBotAudio = new Audio("assets/missions/quiet-please-i-am-seeing-searching-for-v-bucks-missions.mp3");
 const thankYouAudio = new Audio("assets/missions/[(Fortnite Save The World) Ray]Thank......-bot_.mp3");
+const backgroundMusic = new Audio("assets/audio/01.%20Login%20Screen.mp3");
+backgroundMusic.loop = true;
+backgroundMusic.volume = 0.12;
+backgroundMusic.preload = "none";
 seeBotAudio.preload = "auto";
 thankYouAudio.preload = "auto";
 
@@ -43,12 +49,28 @@ function missionImage(name) {
   return null;
 }
 
+function startBackgroundMusic() {
+  if (!musicEnabled || musicStarted) return;
+  musicStarted = true;
+  backgroundMusic.play().catch(() => { musicStarted = false; });
+}
+
+function pauseBackgroundMusic() {
+  backgroundMusic.pause();
+}
+
+function resumeBackgroundMusic() {
+  if (musicEnabled && musicStarted) backgroundMusic.play().catch(() => {});
+}
+
 function playSfx(kind = "click") {
   if (!soundEnabled) return;
   if (kind === "seeBot" || kind === "thankYou") {
     const audio = kind === "seeBot" ? seeBotAudio : thankYouAudio;
+    pauseBackgroundMusic();
     audio.currentTime = 0;
-    audio.play().catch(() => {});
+    audio.onended = resumeBackgroundMusic;
+    audio.play().catch(() => { resumeBackgroundMusic(); });
     return;
   }
   try {
@@ -313,6 +335,29 @@ $("seeBotDone").addEventListener("click", () => closeSeeBot("thankYou"));
 document.querySelector("[data-close-see-bot]").addEventListener("click", closeSeeBot);
 $("seeBotCopy").addEventListener("click", () => copyText(dailyReport(), "See-Bot report copied."));
 $("copyDaily").addEventListener("click", () => copyText(dailyReport(), "Daily mission summary copied."));
+$("musicToggle").addEventListener("click", () => {
+  musicEnabled = !musicEnabled;
+  $("musicLabel").textContent = musicEnabled ? "MUSIC ON" : "MUSIC OFF";
+  $("musicIcon").textContent = musicEnabled ? "♫" : "♪";
+  $("musicToggle").setAttribute("aria-pressed", String(musicEnabled));
+  if (musicEnabled) {
+    musicStarted = false;
+    startBackgroundMusic();
+  } else {
+    musicStarted = false;
+    pauseBackgroundMusic();
+  }
+});
+
+// Browsers require a visitor gesture before audio can start. The first normal
+// page interaction starts the quiet soundtrack; the music button remains manual.
+document.addEventListener("pointerdown", event => {
+  if (!event.target.closest("#musicToggle")) startBackgroundMusic();
+}, { once: true, passive: true });
+document.addEventListener("keydown", event => {
+  if (event.key !== "Tab" || !event.target.closest("#musicToggle")) startBackgroundMusic();
+}, { once: true });
+
 $("soundToggle").addEventListener("click", () => {
   soundEnabled = !soundEnabled;
   $("soundLabel").textContent = soundEnabled ? "SFX ON" : "SFX OFF";
