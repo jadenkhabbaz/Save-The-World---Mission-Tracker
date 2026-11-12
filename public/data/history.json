@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-11T23:37:14Z",
+  "updatedAt": "2026-11-12T00:07:14Z",
   "days": [
     {
       "date": "2026-10-27",
@@ -747,6 +747,47 @@
           "powerLevelCount": 1,
           "locationCount": 1,
           "checkedAt": "2026-11-11T23:37:14Z",
+          "status": "Parsed mission rows from embedded queryState"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-12",
+      "checkedAt": "2026-11-12T00:07:14Z",
+      "confirmed": true,
+      "missions": [
+        {
+          "mission": "Ride the Lightning",
+          "zone": "Twine Peaks",
+          "location": "The Suburbs",
+          "vbucks": 50,
+          "source": "PennyDB",
+          "sources": [
+            "PennyDB",
+            "HawkBucks"
+          ],
+          "powerLevel": 76
+        }
+      ],
+      "sourceSummaries": [
+        {
+          "name": "PennyDB",
+          "url": "https://pennydb.net/api",
+          "ok": true,
+          "missionCount": 1,
+          "powerLevelCount": 1,
+          "locationCount": 0,
+          "checkedAt": "2026-11-12T00:07:14Z",
+          "status": "Fetched structured mission data"
+        },
+        {
+          "name": "HawkBucks",
+          "url": "https://hawkbucks.com/en",
+          "ok": true,
+          "missionCount": 1,
+          "powerLevelCount": 1,
+          "locationCount": 1,
+          "checkedAt": "2026-11-12T00:07:14Z",
           "status": "Parsed mission rows from embedded queryState"
         }
       ]

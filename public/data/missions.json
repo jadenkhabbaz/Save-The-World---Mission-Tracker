@@ -1,8 +1,22 @@
 {
-  "updatedAt": "2026-11-11T23:37:14Z",
+  "updatedAt": "2026-11-12T00:07:14Z",
   "confirmed": true,
   "status": "confirmed",
   "today": [
+    {
+      "mission": "Ride the Lightning",
+      "zone": "Twine Peaks",
+      "location": "The Suburbs",
+      "vbucks": 50,
+      "source": "PennyDB",
+      "sources": [
+        "PennyDB",
+        "HawkBucks"
+      ],
+      "powerLevel": 76
+    }
+  ],
+  "yesterday": [
     {
       "mission": "Repair The Shelter",
       "zone": "Canny Valley",
@@ -16,44 +30,6 @@
       "powerLevel": 52
     }
   ],
-  "yesterday": [
-    {
-      "mission": "Retrieve the Data",
-      "zone": "Plankerton",
-      "location": "Forest",
-      "vbucks": 50,
-      "source": "PennyDB",
-      "sources": [
-        "PennyDB",
-        "HawkBucks"
-      ],
-      "powerLevel": 34
-    },
-    {
-      "mission": "Fight Category 2 Storm",
-      "zone": "Canny Valley",
-      "location": "Desert",
-      "vbucks": 50,
-      "source": "PennyDB",
-      "sources": [
-        "PennyDB",
-        "HawkBucks"
-      ],
-      "powerLevel": 46
-    },
-    {
-      "mission": "Fight Category 3 Storm",
-      "zone": "Twine Peaks",
-      "location": "Industrial Park",
-      "vbucks": 50,
-      "source": "PennyDB",
-      "sources": [
-        "PennyDB",
-        "HawkBucks"
-      ],
-      "powerLevel": 94
-    }
-  ],
   "sources": [
     {
       "name": "PennyDB",
@@ -62,7 +38,7 @@
       "missionCount": 1,
       "powerLevelCount": 1,
       "locationCount": 0,
-      "checkedAt": "2026-11-11T23:37:14Z",
+      "checkedAt": "2026-11-12T00:07:14Z",
       "status": "Fetched structured mission data"
     },
     {
@@ -72,10 +48,10 @@
       "missionCount": 1,
       "powerLevelCount": 1,
       "locationCount": 1,
-      "checkedAt": "2026-11-11T23:37:14Z",
+      "checkedAt": "2026-11-12T00:07:14Z",
       "status": "Parsed mission rows from embedded queryState"
     }
   ],
-  "historyDays": 16,
+  "historyDays": 17,
   "historyAvailable": true
 }
