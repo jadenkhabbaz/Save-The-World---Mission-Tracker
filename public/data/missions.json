@@ -1,8 +1,9 @@
 {
-  "updatedAt": "2026-11-12T23:54:39Z",
-  "confirmed": true,
-  "status": "confirmed",
-  "today": [
+  "updatedAt": "2026-11-13T00:07:19Z",
+  "confirmed": false,
+  "status": "partial",
+  "today": [],
+  "yesterday": [
     {
       "mission": "Ride the Lightning",
       "zone": "Twine Peaks",
@@ -16,42 +17,28 @@
       "powerLevel": 76
     }
   ],
-  "yesterday": [
-    {
-      "mission": "Repair The Shelter",
-      "zone": "Canny Valley",
-      "location": "Desert",
-      "vbucks": 50,
-      "source": "PennyDB",
-      "sources": [
-        "PennyDB",
-        "HawkBucks"
-      ],
-      "powerLevel": 52
-    }
-  ],
   "sources": [
     {
       "name": "PennyDB",
       "url": "https://pennydb.net/api",
       "ok": true,
-      "missionCount": 1,
-      "powerLevelCount": 1,
+      "missionCount": 0,
+      "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-12T23:54:39Z",
+      "checkedAt": "2026-11-13T00:07:19Z",
       "status": "Fetched structured mission data"
     },
     {
       "name": "HawkBucks",
       "url": "https://hawkbucks.com/en",
       "ok": true,
-      "missionCount": 1,
-      "powerLevelCount": 1,
-      "locationCount": 1,
-      "checkedAt": "2026-11-12T23:54:39Z",
-      "status": "Parsed mission rows from embedded queryState"
+      "missionCount": 0,
+      "powerLevelCount": 0,
+      "locationCount": 0,
+      "checkedAt": "2026-11-13T00:07:19Z",
+      "status": "Page fetched, but no mission rows were found in queryState or visible page text"
     }
   ],
-  "historyDays": 17,
+  "historyDays": 18,
   "historyAvailable": true
 }
