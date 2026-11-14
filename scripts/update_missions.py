@@ -138,7 +138,6 @@ def decode_query_state(html):
                 return json.loads(raw)
             if isinstance(raw, dict):
                 return raw
-    # Some builds serialize the state directly as an object rather than a string.
     match = re.search(r'["\']queryState["\']\s*:\s*(\{.*?\})\s*[,}]', html, re.S)
     if match:
         try:
@@ -194,7 +193,6 @@ def mission_rows_from_query_state(query_state):
         area = zone_name(area_raw)
         if not name or not area or not actual_zone:
             continue
-        # Deduplicate the same mission if the query state nests it more than once.
         ident = (str(obj.get("id") or ""), name.casefold(), area.casefold(), actual_zone.casefold(), amount)
         if ident in seen:
             continue
@@ -292,7 +290,6 @@ def merge_missions(penny, hawk):
         current = merged[key]
         if not current.get("powerLevel") and item.get("powerLevel"):
             current["powerLevel"] = item["powerLevel"]
-        # HawkBucks' `zone` is the actual map tile label; preserve it as location.
         if item.get("location") and not current.get("location"):
             current["location"] = item["location"]
         for source in item.get("sources", []):
