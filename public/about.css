@@ -39,5 +39,7 @@
 .about-value-with-art{overflow:hidden;padding-top:0}
 .about-value-art{display:block;width:calc(100% + 46px);height:158px;max-width:none;object-fit:cover;margin:0 -23px 22px;border-bottom:1px solid rgba(0,234,255,.32);box-shadow:0 12px 28px rgba(0,0,0,.22)}
 .about-heroes-art{object-position:center 38%}
+/* Show more of the upper part of the first Free for everyone image */
+.about-values>.about-value:first-child .about-value-art{object-position:center 20%}
 .about-vbucks-art{object-fit:contain;padding:10px 18px;background:radial-gradient(ellipse at center,rgba(0,234,255,.12),transparent 68%),#071321}
 @media(max-width:760px){.about-value-art{height:145px}}
