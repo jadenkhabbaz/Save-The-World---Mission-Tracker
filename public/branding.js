@@ -1,4 +1,3 @@
-// Visual cleanup: hide source cards and replace the text V-Bucks glyph with the actual coin artwork.
 (() => {
   const hideSources = () => {
     const sourceBox = document.getElementById("sourceStatus");
