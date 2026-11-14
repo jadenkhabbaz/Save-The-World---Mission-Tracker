@@ -1,8 +1,4 @@
-/*
- * Save the World zone badge colors.
- * Load this file AFTER app.js. It only adds a zone class to .mission-region.
- * It does not alter mission cards, frames, layout, or data.
- */
+
 (() => {
   "use strict";
 
