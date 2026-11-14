@@ -31,7 +31,7 @@ function missionIcon(name) {
   return "🎯";
 }
 
-/* Keep the existing mission-specific artwork. */
+
 function missionImage(name) {
   const n = safe(name).toLowerCase();
   if (n.includes("build the radar grid")) return "assets/missions/build-the-radar-grid.png";
@@ -106,7 +106,7 @@ function playSfx(kind = "click") {
       gain.gain.exponentialRampToValueAtTime(.001, now + .09);
       osc.start(now); osc.stop(now + .1);
     }
-  } catch (_) { /* Audio is optional; the tracker still works without it. */ }
+  } catch (_) {  }
 }
 
 function showToast(message) {
@@ -349,8 +349,6 @@ $("musicToggle").addEventListener("click", () => {
   }
 });
 
-// Browsers require a visitor gesture before audio can start. The first normal
-// page interaction starts the quiet soundtrack; the music button remains manual.
 document.addEventListener("pointerdown", event => {
   if (!event.target.closest("#musicToggle")) startBackgroundMusic();
 }, { once: true, passive: true });
