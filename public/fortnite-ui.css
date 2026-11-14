@@ -1,4 +1,4 @@
-/* JadBakerX Fortnite-inspired interface layer. Loaded after the existing styles. */
+
 :root {
   --bg:#080d19; --cyan:#00eaff; --cyan2:#36d9ef; --gold:#ffc928;
   --panel:#101b2d; --panel2:#0b1627; --line:#23435d;
@@ -252,7 +252,7 @@ body.modal-open { overflow:hidden; }
   .see-bot-screen p { font-size:14px; }
 }
 
-/* === Alignment + polished visual pass === */
+
 header {
   width:100% !important; max-width:none !important; margin:0 !important;
   padding-inline:clamp(18px,3.2vw,48px) !important; box-sizing:border-box !important;
@@ -301,7 +301,7 @@ header nav { flex:0 0 auto; }
   .mission-meta { margin-left:0 !important; }
 }
 
-/* See-Bot modal: consistent, centered action buttons */
+
 .see-bot-actions {
   display:flex !important;
   align-items:stretch !important;
@@ -359,7 +359,7 @@ header nav { flex:0 0 auto; }
 }
 
 
-/* See-Bot circular character portrait with cyan holographic backlight */
+
 .see-bot-heading { gap:18px !important; min-height:140px; }
 .see-bot-avatar {
   width:136px !important;height:136px !important;flex:0 0 136px !important;
@@ -384,7 +384,7 @@ header nav { flex:0 0 auto; }
   .see-bot-avatar i { right:2px !important;bottom:4px !important; }
 }
 
-/* See-Bot modal: compact, genuinely centered layout */
+
 #seeBotModal.see-bot-modal {
   position:fixed !important;
   inset:0 !important;
@@ -470,7 +470,7 @@ header nav { flex:0 0 auto; }
   #seeBotModal .see-bot-screen { margin-top:16px !important; }
 }
 
-/* See-Bot artwork alignment: center the visible character, not just the img box */
+
 #seeBotModal .see-bot-avatar {
   position:relative !important;
   display:block !important;
@@ -498,7 +498,7 @@ header nav { flex:0 0 auto; }
 
 
 
-/* Separate background-music control; independent from sound effects. */
+
 .music-toggle { border-color:rgba(0,234,255,.35); }
 .music-toggle[aria-pressed="false"] { color:#8294a9; border-color:#31445c; }
 .music-toggle[aria-pressed="true"] { color:#72efff; }
