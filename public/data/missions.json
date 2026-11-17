@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-17T19:37:21Z",
+  "updatedAt": "2026-11-17T19:46:53Z",
   "confirmed": true,
   "status": "confirmed",
   "today": [
@@ -8,9 +8,8 @@
       "zone": "Twine Peaks",
       "location": "The Suburbs",
       "vbucks": 50,
-      "source": "PennyDB",
+      "source": "HawkBucks",
       "sources": [
-        "PennyDB",
         "HawkBucks"
       ],
       "powerLevel": 76
@@ -44,12 +43,12 @@
     {
       "name": "PennyDB",
       "url": "https://pennydb.net/api",
-      "ok": true,
-      "missionCount": 1,
-      "powerLevelCount": 1,
+      "ok": false,
+      "missionCount": 0,
+      "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-17T19:37:21Z",
-      "status": "Fetched structured mission data"
+      "checkedAt": "2026-11-17T19:46:53Z",
+      "status": "Fetch failed: The read operation timed out"
     },
     {
       "name": "HawkBucks",
@@ -58,7 +57,7 @@
       "missionCount": 1,
       "powerLevelCount": 1,
       "locationCount": 1,
-      "checkedAt": "2026-11-17T19:37:21Z",
+      "checkedAt": "2026-11-17T19:46:53Z",
       "status": "Parsed mission rows from embedded queryState"
     }
   ],
