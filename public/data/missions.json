@@ -1,34 +1,9 @@
 {
-  "updatedAt": "2026-11-19T23:38:50Z",
+  "updatedAt": "2026-11-20T00:07:15Z",
   "confirmed": false,
   "status": "partial",
   "today": [],
-  "yesterday": [
-    {
-      "mission": "Repair The Shelter",
-      "zone": "Canny Valley",
-      "location": "Industrial Park",
-      "vbucks": 50,
-      "source": "PennyDB",
-      "sources": [
-        "PennyDB",
-        "HawkBucks"
-      ],
-      "powerLevel": 52
-    },
-    {
-      "mission": "Ride the Lightning",
-      "zone": "Canny Valley",
-      "location": "Industrial Park",
-      "vbucks": 50,
-      "source": "PennyDB",
-      "sources": [
-        "PennyDB",
-        "HawkBucks"
-      ],
-      "powerLevel": 70
-    }
-  ],
+  "yesterday": [],
   "sources": [
     {
       "name": "PennyDB",
@@ -37,7 +12,7 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-19T23:38:50Z",
+      "checkedAt": "2026-11-20T00:07:15Z",
       "status": "Fetched structured mission data"
     },
     {
@@ -47,10 +22,10 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-19T23:38:50Z",
+      "checkedAt": "2026-11-20T00:07:15Z",
       "status": "Page fetched, but no mission rows were found in queryState or visible page text"
     }
   ],
-  "historyDays": 24,
+  "historyDays": 25,
   "historyAvailable": true
 }
