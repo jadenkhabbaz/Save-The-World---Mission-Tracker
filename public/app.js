@@ -39,10 +39,14 @@ function missionImage(name) {
   if (n.includes("destroy the encampments")) return "assets/missions/destroy-the-encampments.png";
   if (n.includes("eliminate and collect")) return "assets/missions/eliminate-and-collect.png";
   if (n.includes("evacuate the shelter")) return "assets/missions/evacuate-the-shelter.png";
-  if (n.includes("fight category 2 storm")) return "assets/missions/fight-category-2-storm.png";
-  if (n.includes("fight category 4 storm")) return "assets/missions/fight-the-storm-four-atlas.png";
-  if (n.includes("fight category 3 storm") || n.includes("fight the storm triple atlas") || n.includes("triple atlas"))
+  if (n.includes("fight category 2 storm") || n.includes("fight the storm category 2"))
+    return "assets/missions/fight-category-2-storm.png";
+  if (n.includes("fight category 4 storm") || n.includes("fight the storm category 4"))
+    return "assets/missions/fight-the-storm-four-atlas.png";
+  if (n.includes("fight category 3 storm") || n.includes("fight the storm category 3") || n.includes("fight the storm triple atlas") || n.includes("triple atlas"))
     return "assets/missions/fight-the-storm-triple-atlas.png";
+  if (n.includes("fight the storm") || n.includes("fight category 1 storm"))
+    return "assets/missions/FIGHT THE STORM.png";
   if (n.includes("repair the shelter")) return "assets/missions/repair-the-shelter.png";
   if (n.includes("retrieve the data")) return "assets/missions/retrieve-the-data.png";
   if (n.includes("ride the lightning")) return "assets/missions/ride-the-lightning.png";
