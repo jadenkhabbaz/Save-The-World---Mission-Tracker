@@ -1,8 +1,9 @@
 {
-  "updatedAt": "2026-11-21T23:37:14Z",
-  "confirmed": true,
-  "status": "confirmed",
-  "today": [
+  "updatedAt": "2026-11-22T00:07:13Z",
+  "confirmed": false,
+  "status": "partial",
+  "today": [],
+  "yesterday": [
     {
       "mission": "Fight the Storm",
       "zone": "Canny Valley",
@@ -16,29 +17,28 @@
       "powerLevel": 46
     }
   ],
-  "yesterday": [],
   "sources": [
     {
       "name": "PennyDB",
       "url": "https://pennydb.net/api",
       "ok": true,
-      "missionCount": 1,
-      "powerLevelCount": 1,
+      "missionCount": 0,
+      "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-21T23:37:14Z",
+      "checkedAt": "2026-11-22T00:07:13Z",
       "status": "Fetched structured mission data"
     },
     {
       "name": "HawkBucks",
       "url": "https://hawkbucks.com/en",
       "ok": true,
-      "missionCount": 1,
-      "powerLevelCount": 1,
-      "locationCount": 1,
-      "checkedAt": "2026-11-21T23:37:14Z",
-      "status": "Parsed mission rows from embedded queryState"
+      "missionCount": 0,
+      "powerLevelCount": 0,
+      "locationCount": 0,
+      "checkedAt": "2026-11-22T00:07:13Z",
+      "status": "Page fetched, but no mission rows were found in queryState or visible page text"
     }
   ],
-  "historyDays": 26,
+  "historyDays": 27,
   "historyAvailable": true
 }
