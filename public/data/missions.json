@@ -1,22 +1,9 @@
 {
-  "updatedAt": "2026-11-22T23:37:15Z",
+  "updatedAt": "2026-11-23T00:07:23Z",
   "confirmed": false,
   "status": "partial",
   "today": [],
-  "yesterday": [
-    {
-      "mission": "Fight the Storm",
-      "zone": "Canny Valley",
-      "location": "Desert",
-      "vbucks": 50,
-      "source": "PennyDB",
-      "sources": [
-        "PennyDB",
-        "HawkBucks"
-      ],
-      "powerLevel": 46
-    }
-  ],
+  "yesterday": [],
   "sources": [
     {
       "name": "PennyDB",
@@ -25,7 +12,7 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-22T23:37:15Z",
+      "checkedAt": "2026-11-23T00:07:23Z",
       "status": "Fetched structured mission data"
     },
     {
@@ -35,10 +22,10 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-22T23:37:15Z",
+      "checkedAt": "2026-11-23T00:07:23Z",
       "status": "Page fetched, but no mission rows were found in queryState or visible page text"
     }
   ],
-  "historyDays": 27,
+  "historyDays": 28,
   "historyAvailable": true
 }
