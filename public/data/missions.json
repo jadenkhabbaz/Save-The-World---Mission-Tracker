@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-23T18:07:14Z",
+  "updatedAt": "2026-11-23T18:37:16Z",
   "confirmed": false,
   "status": "partial",
   "today": [],
@@ -8,12 +8,12 @@
     {
       "name": "PennyDB",
       "url": "https://pennydb.net/api",
-      "ok": true,
+      "ok": false,
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-23T18:07:14Z",
-      "status": "Fetched structured mission data"
+      "checkedAt": "2026-11-23T18:37:16Z",
+      "status": "Fetch failed: The read operation timed out"
     },
     {
       "name": "HawkBucks",
@@ -22,7 +22,7 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-23T18:07:14Z",
+      "checkedAt": "2026-11-23T18:37:16Z",
       "status": "Page fetched, but no mission rows were found in queryState or visible page text"
     }
   ],
