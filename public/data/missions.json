@@ -1,8 +1,9 @@
 {
-  "updatedAt": "2026-11-24T23:37:15Z",
-  "confirmed": true,
-  "status": "confirmed",
-  "today": [
+  "updatedAt": "2026-11-25T00:07:21Z",
+  "confirmed": false,
+  "status": "partial",
+  "today": [],
+  "yesterday": [
     {
       "mission": "Fight Category 3 Storm",
       "zone": "Twine Peaks",
@@ -16,29 +17,28 @@
       "powerLevel": 88
     }
   ],
-  "yesterday": [],
   "sources": [
     {
       "name": "PennyDB",
       "url": "https://pennydb.net/api",
       "ok": true,
-      "missionCount": 1,
-      "powerLevelCount": 1,
+      "missionCount": 0,
+      "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-24T23:37:15Z",
+      "checkedAt": "2026-11-25T00:07:21Z",
       "status": "Fetched structured mission data"
     },
     {
       "name": "HawkBucks",
       "url": "https://hawkbucks.com/en",
       "ok": true,
-      "missionCount": 1,
-      "powerLevelCount": 1,
-      "locationCount": 1,
-      "checkedAt": "2026-11-24T23:37:15Z",
-      "status": "Parsed mission rows from embedded queryState"
+      "missionCount": 0,
+      "powerLevelCount": 0,
+      "locationCount": 0,
+      "checkedAt": "2026-11-25T00:07:21Z",
+      "status": "Page fetched, but no mission rows were found in queryState or visible page text"
     }
   ],
-  "historyDays": 29,
+  "historyDays": 30,
   "historyAvailable": true
 }
