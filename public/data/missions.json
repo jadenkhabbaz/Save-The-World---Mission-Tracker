@@ -1,22 +1,9 @@
 {
-  "updatedAt": "2026-11-25T23:37:16Z",
+  "updatedAt": "2026-11-26T00:07:17Z",
   "confirmed": false,
   "status": "partial",
   "today": [],
-  "yesterday": [
-    {
-      "mission": "Fight Category 3 Storm",
-      "zone": "Twine Peaks",
-      "location": "Forest",
-      "vbucks": 50,
-      "source": "PennyDB",
-      "sources": [
-        "PennyDB",
-        "HawkBucks"
-      ],
-      "powerLevel": 88
-    }
-  ],
+  "yesterday": [],
   "sources": [
     {
       "name": "PennyDB",
@@ -25,7 +12,7 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-25T23:37:16Z",
+      "checkedAt": "2026-11-26T00:07:17Z",
       "status": "Fetched structured mission data"
     },
     {
@@ -35,10 +22,10 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-25T23:37:16Z",
+      "checkedAt": "2026-11-26T00:07:17Z",
       "status": "Page fetched, but no mission rows were found in queryState or visible page text"
     }
   ],
-  "historyDays": 30,
+  "historyDays": 31,
   "historyAvailable": true
 }
