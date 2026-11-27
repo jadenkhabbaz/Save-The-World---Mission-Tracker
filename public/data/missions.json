@@ -1,16 +1,17 @@
 {
-  "updatedAt": "2026-11-27T00:07:13Z",
+  "updatedAt": "2026-11-27T00:37:13Z",
   "confirmed": true,
   "status": "confirmed",
   "today": [
     {
       "mission": "Ride the Lightning",
       "zone": "Canny Valley",
-      "location": "",
+      "location": "Thunder Route 99",
       "vbucks": 50,
       "source": "PennyDB",
       "sources": [
-        "PennyDB"
+        "PennyDB",
+        "HawkBucks"
       ],
       "powerLevel": 52
     }
@@ -24,18 +25,18 @@
       "missionCount": 1,
       "powerLevelCount": 1,
       "locationCount": 0,
-      "checkedAt": "2026-11-27T00:07:13Z",
+      "checkedAt": "2026-11-27T00:37:13Z",
       "status": "Fetched structured mission data"
     },
     {
       "name": "HawkBucks",
       "url": "https://hawkbucks.com/en",
       "ok": true,
-      "missionCount": 0,
-      "powerLevelCount": 0,
-      "locationCount": 0,
-      "checkedAt": "2026-11-27T00:07:13Z",
-      "status": "Page fetched, but no mission rows were found in queryState or visible page text"
+      "missionCount": 1,
+      "powerLevelCount": 1,
+      "locationCount": 1,
+      "checkedAt": "2026-11-27T00:37:13Z",
+      "status": "Parsed mission rows from embedded queryState"
     }
   ],
   "historyDays": 32,
