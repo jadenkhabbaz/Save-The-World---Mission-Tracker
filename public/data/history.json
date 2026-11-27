@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-27T21:07:14Z",
+  "updatedAt": "2026-11-27T21:37:14Z",
   "days": [
     {
       "date": "2026-10-27",
@@ -1298,16 +1298,17 @@
     },
     {
       "date": "2026-11-27",
-      "checkedAt": "2026-11-27T21:07:14Z",
+      "checkedAt": "2026-11-27T21:37:14Z",
       "confirmed": true,
       "missions": [
         {
-          "mission": "Ride The Lightning",
+          "mission": "Ride the Lightning",
           "zone": "Canny Valley",
           "location": "Thunder Route 99",
           "vbucks": 50,
-          "source": "HawkBucks",
+          "source": "PennyDB",
           "sources": [
+            "PennyDB",
             "HawkBucks"
           ],
           "powerLevel": 52
@@ -1317,12 +1318,12 @@
         {
           "name": "PennyDB",
           "url": "https://pennydb.net/api",
-          "ok": false,
-          "missionCount": 0,
-          "powerLevelCount": 0,
+          "ok": true,
+          "missionCount": 1,
+          "powerLevelCount": 1,
           "locationCount": 0,
-          "checkedAt": "2026-11-27T21:07:14Z",
-          "status": "Fetch failed: HTTP Error 503: Service Unavailable"
+          "checkedAt": "2026-11-27T21:37:14Z",
+          "status": "Fetched structured mission data"
         },
         {
           "name": "HawkBucks",
@@ -1331,7 +1332,7 @@
           "missionCount": 1,
           "powerLevelCount": 1,
           "locationCount": 1,
-          "checkedAt": "2026-11-27T21:07:14Z",
+          "checkedAt": "2026-11-27T21:37:14Z",
           "status": "Parsed mission rows from embedded queryState"
         }
       ]
