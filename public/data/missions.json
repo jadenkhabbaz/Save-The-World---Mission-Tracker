@@ -1,18 +1,30 @@
 {
-  "updatedAt": "2026-11-26T23:58:47Z",
-  "confirmed": false,
-  "status": "partial",
-  "today": [],
+  "updatedAt": "2026-11-27T00:07:13Z",
+  "confirmed": true,
+  "status": "confirmed",
+  "today": [
+    {
+      "mission": "Ride the Lightning",
+      "zone": "Canny Valley",
+      "location": "",
+      "vbucks": 50,
+      "source": "PennyDB",
+      "sources": [
+        "PennyDB"
+      ],
+      "powerLevel": 52
+    }
+  ],
   "yesterday": [],
   "sources": [
     {
       "name": "PennyDB",
       "url": "https://pennydb.net/api",
       "ok": true,
-      "missionCount": 0,
-      "powerLevelCount": 0,
+      "missionCount": 1,
+      "powerLevelCount": 1,
       "locationCount": 0,
-      "checkedAt": "2026-11-26T23:58:47Z",
+      "checkedAt": "2026-11-27T00:07:13Z",
       "status": "Fetched structured mission data"
     },
     {
@@ -22,10 +34,10 @@
       "missionCount": 0,
       "powerLevelCount": 0,
       "locationCount": 0,
-      "checkedAt": "2026-11-26T23:58:47Z",
+      "checkedAt": "2026-11-27T00:07:13Z",
       "status": "Page fetched, but no mission rows were found in queryState or visible page text"
     }
   ],
-  "historyDays": 31,
+  "historyDays": 32,
   "historyAvailable": true
 }
