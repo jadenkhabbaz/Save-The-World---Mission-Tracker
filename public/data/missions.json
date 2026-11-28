@@ -1,29 +1,19 @@
 {
-  "updatedAt": "2026-11-28T00:07:13Z",
+  "updatedAt": "2026-11-28T00:37:13Z",
   "confirmed": true,
   "status": "confirmed",
   "today": [
     {
       "mission": "Fight Category 4 Storm",
       "zone": "Twine Peaks",
-      "location": "",
+      "location": "The Suburbs",
       "vbucks": 50,
       "source": "PennyDB",
       "sources": [
-        "PennyDB"
-      ],
-      "powerLevel": 100
-    },
-    {
-      "mission": "Ride The Lightning",
-      "zone": "Canny Valley",
-      "location": "Thunder Route 99",
-      "vbucks": 50,
-      "source": "HawkBucks",
-      "sources": [
+        "PennyDB",
         "HawkBucks"
       ],
-      "powerLevel": 52
+      "powerLevel": 100
     }
   ],
   "yesterday": [
@@ -48,7 +38,7 @@
       "missionCount": 1,
       "powerLevelCount": 1,
       "locationCount": 0,
-      "checkedAt": "2026-11-28T00:07:13Z",
+      "checkedAt": "2026-11-28T00:37:13Z",
       "status": "Fetched structured mission data"
     },
     {
@@ -58,7 +48,7 @@
       "missionCount": 1,
       "powerLevelCount": 1,
       "locationCount": 1,
-      "checkedAt": "2026-11-28T00:07:13Z",
+      "checkedAt": "2026-11-28T00:37:13Z",
       "status": "Parsed mission rows from embedded queryState"
     }
   ],
